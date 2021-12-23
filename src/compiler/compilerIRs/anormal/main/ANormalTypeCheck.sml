@@ -528,6 +528,7 @@ struct
             else printBackendTypeMismatch "NVCAST" (#2 valueTy, #2 targetTy);
           targetTy
         end
+      | A.NVHASH => tyOf B.word32Ty
 
   fun checkValue env anvalue =
       case anvalue of

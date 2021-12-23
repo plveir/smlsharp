@@ -1,0 +1,54 @@
+# procedure output
+## object
+*.o
+*.a
+## output made from .ppg
+*.ppg.sml
+## output dir
+_build/
+## unarchived llvm-ir from .ll.xz
+*.ll
+## bitcode
+*.bc
+## shared 
+*.so
+## output binaries
+src/compiler/smlsharp
+minismlsharp
+src/ml-lex/smllex
+src/ml-yacc/smlyacc
+src/smlformat/smlformat
+## lexer/parser output
+iml.grm.desc
+iml.grm.sml
+iml.lex.sml
+interface.grm.desc
+interface.grm.sml
+interface.lex.sml
+AbsynConstFormatter.sml
+AbsynFormatter.sml
+AbsynSQLFormatter.sml
+AbsynTyFormatter.sml
+FormatComment.grm.desc
+FormatComment.grm.sml
+FormatComment.lex.sml
+## unknown
+SQLConfig.sml
+Version.sml
+
+# config output
+config.h
+config.log
+config.mk
+config.status
+filemap
+files.mk
+Makefile
+stamp-h
+RELEASE
+
+# personal documents
+json.sml
+jsontest.sml
+test.sml
+MEMO/

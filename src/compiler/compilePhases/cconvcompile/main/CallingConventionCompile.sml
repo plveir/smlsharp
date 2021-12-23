@@ -284,8 +284,8 @@ struct
   fun staticCall {calleeConv : cconv, callerConv : cconv,
                   codeExp, closureEnvExp, argExpList, loc} =
       let
-(*
-val _ = (
+
+(* val _ = (
 print "==\n";
 print (Bug.prettyPrint (N.format_ncexp codeExp) ^ "\n");
 print "caller:\n";
@@ -297,23 +297,23 @@ app (fn t => print (Bug.prettyPrint (N.format_ty t) ^ ",")) (#argTyList calleeCo
 print "\n";
 print (Bug.prettyPrint (N.format_ty (#retTy calleeConv)));
 print "\n==\n"
-)
-*)
+) *)
+
         fun convert ((fromTy, toTy), exp) =
-            case (#tag (#2 fromTy), #tag (#2 toTy)) of
-              (R.BOXED, R.BOXED) => exp
-            | (R.BOXED, R.UNBOXED) =>
-              N.NCUNPACK {exp = exp, resultTy = toTy, loc = loc}
-            | (R.UNBOXED, R.BOXED) =>
-              N.NCPACK {exp = exp, expTy = fromTy, loc = loc}
-            | (R.UNBOXED, R.UNBOXED) =>
-              if #2 fromTy = #2 toTy
-              then exp
-              else N.NCCAST {exp = exp,
-                             expTy = fromTy,
-                             targetTy = toTy,
-                             cast = BuiltinPrimitive.BitCast,
-                             loc = loc}
+          case (#tag (#2 fromTy), #tag (#2 toTy)) of
+            (R.BOXED, R.BOXED) => exp
+          | (R.BOXED, R.UNBOXED) =>
+            N.NCUNPACK {exp = exp, resultTy = toTy, loc = loc}
+          | (R.UNBOXED, R.BOXED) =>
+            N.NCPACK {exp = exp, expTy = fromTy, loc = loc}
+          | (R.UNBOXED, R.UNBOXED) =>
+            if #2 fromTy = #2 toTy
+            then exp
+            else N.NCCAST {exp = exp,
+                            expTy = fromTy,
+                            targetTy = toTy,
+                            cast = BuiltinPrimitive.BitCast,
+                            loc = loc}
         val argExpList =
             ListPair.mapEq convert
                            (ListPair.zipEq (#actualArgTyList callerConv,
@@ -451,6 +451,7 @@ print "\n==\n"
       | C.CVWORD32_ORB (c1, c2) =>
         N.NVWORD32 (Word32.orb (constToWord (compileConst env c1),
                                 constToWord (compileConst env c2)))
+      | C.CVHASH => N.NVHASH
 
   and constToWord (N.NVWORD32 w) = w
     | constToWord (N.NVCAST {value, ...}) = constToWord value

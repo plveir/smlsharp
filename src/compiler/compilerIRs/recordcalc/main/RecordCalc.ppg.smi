@@ -27,6 +27,7 @@ struct
     | CONST of tlconst
     | SIZE of DynamicKind.size' * ty
     | TAG of DynamicKind.tag' * ty
+    | HASH
   datatype tlstring = datatype TypedLambda.tlstring
   datatype rcvalue =
       RCCONSTANT of rcconst

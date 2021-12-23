@@ -1,0 +1,14 @@
+_require "../basis.smi"
+_require "../reify.smi"
+
+structure HashTbl =
+struct
+  type 'v bucket (= list)
+
+  type hashtbl (= boxed)
+
+  val create : {hash: string -> word, eq: string * string -> bool} -> hashtbl
+  val size   : hashtbl -> int
+  val add    : ['a#reify. hashtbl -> string -> 'a -> unit]
+  val find   : hashtbl -> string -> Dynamic.void Dynamic.dyn option
+end

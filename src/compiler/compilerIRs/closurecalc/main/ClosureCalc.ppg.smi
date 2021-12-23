@@ -67,6 +67,7 @@ struct
     | CVSIZE of {size : RuntimeTypes.size, ty : ty}
     | CVCCONVTAG of Types.codeEntryTy
     | CVWORD32_ORB of ccconst * ccconst
+    | CVHASH
 
   datatype cconv =
       STATICCALL of Types.codeEntryTy

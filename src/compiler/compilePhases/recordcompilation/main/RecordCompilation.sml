@@ -17,6 +17,7 @@ struct
   structure RC = RecordCalc
   structure T = Types
   structure TB = TypesBasics
+  structure UP = UserLevelPrimitive
 
   fun newVar ty =
       {path = [],
@@ -192,11 +193,22 @@ struct
         case SingletonTyMap.find (instanceEnv, sty) of
           SOME var => INST_VALUE (RC.RCVAR var, loc)
         | NONE => 
-          (
-           print "generateInstacne\n";
-           print (Bug.prettyPrint (T.format_singletonTy sty));
-           raise Bug.Bug "generateInstance (SingletonTyMap.find NONE)"
-          )
+          (case sty of
+            T.INDEXty (key, T.CONSTRUCTty{tyCon, ...}) => 
+            if (TypID.eq(#id (UP.HASH_tyCon_hashtbl Loc.noloc),#id tyCon)) then 
+              (INST_VALUE (RC.RCCONSTANT (RC.HASH), loc))
+            else 
+              (
+              print "generateInstacne\n";
+              print (Bug.prettyPrint (T.format_singletonTy sty));
+              raise Bug.Bug "generateInstance (SingletonTyMap.find NONE)"
+              )
+          | _ =>
+            (
+            print "generateInstacne\n";
+            print (Bug.prettyPrint (T.format_singletonTy sty));
+            raise Bug.Bug "generateInstance (SingletonTyMap.find NONE)"
+            ))
 
   fun generateInstances context tys loc =
       map (fn ty as T.SINGLETONty sty => generateInstance context sty loc
@@ -323,37 +335,82 @@ struct
       | TL.TLSELECT {label, recordExp, recordTy, resultTy, loc} =>
         let
           val resultTy = compileTy resultTy
+          val indexExp = toExp context (generateInstance context (T.INDEXty (label, recordTy)) loc)
+          val selectExp = RC.RCSELECT
+                            {indexExp = indexExp,
+                              label = label,
+                              recordExp = compileExp context recordExp,
+                              recordTy = compileTy recordTy,
+                              resultTy = resultTy,
+                              resultSize = generateSize context loc resultTy,
+                              resultTag = generateTag context loc resultTy,
+                              loc = loc}
+          val labelExp = TL.TLSTRING (TL.STRING (RecordLabel.toString label), loc)
+          val findExp = (TL.TLEXVAR ((UP.HASH_exInfo_find loc), loc))
+          val findTy = T.FUNMty ([recordTy], T.FUNMty ([BuiltinTypes.stringTy], resultTy))
+          val findWithRecordExp = TL.TLAPPM 
+                                {funExp = findExp,
+                                  funTy = findTy,
+                                  argExpList = [recordExp],
+                                  loc = loc}
+          val findWithRecordTy = T.FUNMty ([BuiltinTypes.stringTy], resultTy)
+          val hashFindExp = RC.RCAPPM
+                          {funExp = compileExp context findWithRecordExp,
+                            funTy = compileTy findWithRecordTy,
+                            argExpList = [compileExp context labelExp],
+                            loc = loc}
         in
-          RC.RCSELECT
-            {indexExp =
-               toExp
-                 context
-                 (generateInstance context (T.INDEXty (label, recordTy)) loc),
-             label = label,
-             recordExp = compileExp context recordExp,
-             recordTy = compileTy recordTy,
-             resultTy = resultTy,
-             resultSize = generateSize context loc resultTy,
-             resultTag = generateTag context loc resultTy,
-             loc = loc}
+          RC.RCSWITCH
+          {exp = indexExp,
+            expTy = BuiltinTypes.word32Ty,
+            branches = [{const=(RC.INT32 ~1), body=hashFindExp}],
+            defaultExp = selectExp,
+            resultTy = compileTy resultTy,
+            loc = loc}
         end
       | TL.TLMODIFY {label, recordExp, recordTy, elementExp, elementTy, loc} =>
         let
           val elementTy = compileTy elementTy
+          val indexExp = toExp context (generateInstance context (T.INDEXty (label, recordTy)) loc)
+          val resultTy = BuiltinTypes.unitTy
+          val modifyExp = RC.RCMODIFY
+                            {indexExp = indexExp,
+                            label = label,
+                            recordExp = compileExp context recordExp,
+                            recordTy = compileTy recordTy,
+                            elementExp = compileExp context elementExp,
+                            elementTy = elementTy,
+                            elementSize = generateSize context loc elementTy,
+                            elementTag = generateTag context loc elementTy,
+                            loc = loc}
+          val labelExp = TL.TLSTRING (TL.STRING (RecordLabel.toString label), loc)
+          val addExp = (TL.TLEXVAR ((UP.HASH_exInfo_add loc), loc))
+          val addTy = T.FUNMty ([recordTy], T.FUNMty ([BuiltinTypes.stringTy], T.FUNMty ([elementTy], resultTy)))
+          val addWithRecordExp = TL.TLAPPM 
+                                  {funExp = addExp,
+                                    funTy = addTy,
+                                    argExpList = [recordExp],
+                                    loc = loc}
+          val addWithRecordTy = T.FUNMty ([BuiltinTypes.stringTy], T.FUNMty ([elementTy], resultTy))
+          val addWithRecAndLabelExp = TL.TLAPPM 
+                                        {funExp = addWithRecordExp,
+                                          funTy = addWithRecordTy,
+                                          argExpList = [labelExp],
+                                          loc = loc}
+          val addWithRecAndLabelTy = T.FUNMty ([elementTy], resultTy)
+          val hashAddExp = RC.RCAPPM
+                            {funExp = compileExp context addWithRecAndLabelExp,
+                              funTy = compileTy addWithRecAndLabelTy,
+                              argExpList = [compileExp context elementExp],
+                              loc = loc}
         in
-          RC.RCMODIFY
-            {indexExp =
-               toExp
-                 context
-                 (generateInstance context (T.INDEXty (label, recordTy)) loc),
-             label = label,
-             recordExp = compileExp context recordExp,
-             recordTy = compileTy recordTy,
-             elementExp = compileExp context elementExp,
-             elementTy = elementTy,
-             elementSize = generateSize context loc elementTy,
-             elementTag = generateTag context loc elementTy,
-             loc = loc}
+          RC.RCSWITCH
+          {exp = indexExp,
+            expTy = BuiltinTypes.word32Ty,
+            branches = [{const=(RC.INT32 ~1), body=hashAddExp}],
+            defaultExp = modifyExp,
+            resultTy = resultTy,
+            loc = loc}
         end
       | TL.TLRAISE {exp, resultTy, loc} =>
         (* ty may contain POLYty due to rank-1 poly.

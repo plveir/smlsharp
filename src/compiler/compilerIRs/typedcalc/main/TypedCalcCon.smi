@@ -14,7 +14,7 @@ _require "../../../data/types/main/Types.ppg.smi"
 _require local "../../../data/types/main/Unify.smi"
 _require local "../../../data/types/main/TypesBasics.smi"
 _require local "../../../data/builtin/main/BuiltinTypes.smi"
-(* _require local "../../../extensions/userlevelprimitive/main/UserLevelPrimitive.smi" *)
+_require local "../../../extensions/userlevelprimitive/main/UserLevelPrimitive.smi"
 _require local "../../../extensions/reflection/main/ReifiedTyData.smi"
 
 structure TypedCalcCon =

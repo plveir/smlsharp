@@ -2179,7 +2179,6 @@ in
    *)
 
   and typeinfExp lambdaDepth applyDepth (context : TIC.context) icexp =
-(*  (printicexptype icexp; *)
      case icexp of
         IC.ICERROR =>
         let
@@ -3763,6 +3762,70 @@ in
                        (T.ERRORty, TC.TPERROR)
                       )
              end
+           (* | T.CONSTRUCTty {tyCon, ...} =>
+            if (TypID.eq(#id (UP.HASH_tyCon_hashtbl Loc.noloc),#id tyCon)) then 
+              let
+               val recordTy =
+                   T.newtyRaw
+                    {
+                     lambdaDepth = lambdaDepth,
+                     kind = T.KIND {tvarKind = T.REC (RecordLabel.Map.empty),
+                                    properties = T.hashProperties,
+                                    dynamicKind = NONE
+                                   },
+                     utvarOpt = NONE
+                    }
+              in
+                (
+                  U.unify [(ty1, recordTy)];
+                  (typeinfExp lambdaDepth (inc applyDepth) context
+                    (IC.ICAPPM
+                    ((IC.ICAPPM ((UP.HASH_icexp_find loc), [icexp], loc)),
+                    [(IC.ICCONSTANT(A.STRING(RecordLabel.toString label), loc))],
+                    loc))
+                  )
+                  (* (P.print "plveir:icexvar";(ty, TC.TPEXVAR ({path=externalLongsymbol, ty=ty}, loc))) *)
+                )
+                handle U.Unify =>
+                        (
+                          unifFail 10024;
+                          E.enqueueError "Typeinf 035"
+                          (loc,
+                          E.TyConMismatch("035",{domTy=recordTy,argTy=ty1}));
+                          (T.ERRORty, TC.TPERROR)
+                        )
+              end
+            else 
+              let
+                val elemTy = T.newtyWithLambdaDepth (lambdaDepth, T.univKind)
+                val recordTy =
+                    T.newtyRaw
+                      {
+                      lambdaDepth = lambdaDepth,
+                      kind = T.KIND {tvarKind = T.REC (RecordLabel.Map.singleton(label, elemTy)),
+                                      properties = T.emptyProperties,
+                                      dynamicKind = NONE
+                                    },
+                      utvarOpt = NONE
+                      }
+              in
+                (
+                  U.unify [(ty1, recordTy)];
+                  (elemTy, TC.TPSELECT{label=label,
+                                        exp=tpexp,
+                                        expTy=recordTy,
+                                        resultTy = elemTy,
+                                        loc=loc})
+                )
+                handle U.Unify =>
+                        (
+                        unifFail 24;
+                          E.enqueueError "Typeinf 035"
+                          (loc,
+                          E.TyConMismatch("035",{domTy=recordTy,argTy=ty1}));
+                          (T.ERRORty, TC.TPERROR)
+                        )
+              end *)
            | _ => (* this case may be empty : このケースはありうる；318_record.sml *)
              let
                val (ty1, tpexp) =
@@ -4850,25 +4913,25 @@ in
                           evalScopedTvars lambdaDepth context scopedTvars loc
                       val (localBinds1, patternVarBinds1, extraBinds1) =
                           (decomposeValbind
-                             lambdaDepth
-                             newContext
-                             (icpat, icexp))
+                            lambdaDepth
+                            newContext
+                            (icpat, icexp))
                           handle
                           exn as E.RecordLabelSetMismatch _ =>
                           (
-                           E.enqueueError "Typeinf 065"
-                             (Loc.mergeLocs
+                          E.enqueueError "Typeinf 065"
+                            (Loc.mergeLocs
                                 (IC.getLocPat icpat, IC.getLocExp icexp),
                               exn);
-                           (nil, nil, nil)
+                          (nil, nil, nil)
                           )
                         | exn as E.PatternExpMismatch _ =>
                           (
-                           E.enqueueError "Typeinf 066"
-                             (Loc.mergeLocs
+                          E.enqueueError "Typeinf 066"
+                            (Loc.mergeLocs
                                 (IC.getLocPat icpat, IC.getLocExp icexp),
                               exn);
-                           (nil, nil, nil)
+                          (nil, nil, nil)
                           )
                      (* The following is added to fix the bug 68. *)
                       val tyvarSet =
@@ -5683,7 +5746,7 @@ in
         let
           val varInfoLoc = Symbol.longsymbolToLoc (#longsymbol varInfo)
           val varInfo =
-              case VarMap.find(#varEnv context, varInfo)  of
+              (case VarMap.find (#varEnv context, varInfo) of
                 SOME (TC.VARID varInfo) =>
                 varInfo # {path = Symbol.replaceLocLongsymbol
                                     varInfoLoc
@@ -5692,7 +5755,7 @@ in
                 raise bug "recfunvar in ICEXNTAGD"
               | NONE =>
                 if E.isError() then raise Fail
-                else raise bug "var not found (3)"
+                else raise bug "var not found (3)")
         in
           (TIC.emptyContext,
            [TC.TPEXNTAGD

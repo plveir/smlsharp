@@ -10,9 +10,7 @@ local
   structure T = Types
   structure TB = TypesBasics
   structure TU = TypesUtils
-(*
-  structure U = UserLevelPrimitive
-*)
+  (* structure U = UserLevelPrimitive *)
   structure DK = DynamicKind
 in
   exception Unify
@@ -150,6 +148,11 @@ in
                    nil
                    kindFields
                | T.TYVARty _ => raise bug "checkKind"
+               | T.CONSTRUCTty {tyCon,...} => 
+                  RecordLabel.Map.foldri
+                    (fn (l, ty, tyEquations) => tyEquations)
+                    nil
+                    kindFields
                | _ => raiseUnify 7)
             | T.OCONSTkind L =>
               (case List.filter

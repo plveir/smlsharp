@@ -25,6 +25,8 @@ _require local "./TagKind.smi"
 _require local "./SizeKind.smi"
 _require local "./DynamicExistInstance.smi"
 
+_require local "../../../extensions/userlevelprimitive/main/UserLevelPrimitive.smi"
+_require local "../../../data/symbols/main/RecordLabel.smi"
 
 structure RecordCompilation =
 struct

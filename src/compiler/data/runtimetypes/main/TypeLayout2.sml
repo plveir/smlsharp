@@ -34,7 +34,7 @@ struct
 
   fun coerceToProperties properties prop =
       case Types.propertiesOf properties of
-        {reify, boxed, unboxed, eq} =>
+        {reify, boxed, unboxed, eq, hash} =>
         if boxed andalso unboxed then NONE
         else if boxed then coerceToBoxed prop
         else if unboxed then coerceToUnboxed prop

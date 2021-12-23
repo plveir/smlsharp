@@ -10,6 +10,7 @@ struct
 
   structure C = TypedCalc
   structure T = Types
+  structure UP = UserLevelPrimitive
 
   fun printE s =
       TextIO.output (TextIO.stdOut, s)
@@ -555,12 +556,24 @@ struct
               SOME fields
             | _ => NONE
       in
-        case fields of
-          NONE => raise Bug.Bug "selectTy"
-        | SOME fields =>
-          case RecordLabel.Map.find (fields, label) of
+        case TypesBasics.derefTy ty of
+          T.CONSTRUCTty {tyCon,...} => 
+          (if (TypID.eq(#id (UP.HASH_tyCon_hashtbl Loc.noloc),#id tyCon)) then 
+            ty
+          else 
+            (case fields of
+              NONE => raise Bug.Bug "selectTy"
+            | SOME fields =>
+              case RecordLabel.Map.find (fields, label) of
+                NONE => raise Bug.Bug "selectTy"
+              | SOME ty => ty))
+        | _ => 
+          (case fields of
             NONE => raise Bug.Bug "selectTy"
-          | SOME ty => ty
+          | SOME fields =>
+            case RecordLabel.Map.find (fields, label) of
+              NONE => raise Bug.Bug "selectTy"
+            | SOME ty => ty)
       end
 
   fun TPSELECT btvEnv {exp = (exp, expTy), label, loc} =

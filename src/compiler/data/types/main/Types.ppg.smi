@@ -26,16 +26,17 @@ struct
   type utvar = {symbol:Symbol.symbol, id:TvarID.id, isEq:bool, lifted:bool}
   type lambdaDepth = int
 
-  datatype kindProperty = REIFY | BOXED | UNBOXED | EQ
+  datatype kindProperty = REIFY | BOXED | UNBOXED | EQ | HASH
   type kindPropertyList (= {})
 
   val propertiesOf
-      : kindPropertyList -> {boxed:bool, unboxed:bool, reify:bool, eq:bool}
+      : kindPropertyList -> {boxed:bool, unboxed:bool, reify:bool, eq:bool, hash:bool}
   val isProperties : kindProperty -> kindPropertyList -> bool
   val isSubProperties : kindPropertyList -> kindPropertyList -> bool
   val unionProperties : kindPropertyList -> kindPropertyList -> kindPropertyList
   val equalProperties : kindPropertyList -> kindPropertyList -> bool
   val emptyProperties : kindPropertyList
+  val hashProperties : kindPropertyList
   val addProperties : kindProperty -> kindPropertyList -> kindPropertyList
 
   datatype ty =
@@ -251,6 +252,7 @@ struct
   val univKind : {kind : kind, utvarOpt: utvar option}
   val emptyRecordKind : {kind : kind, utvarOpt: utvar option}
   val reifyKind : {kind : kind, utvarOpt: utvar option}
+  val hashKind : {kind : kind, utvarOpt: utvar option}
   val kindedTyvarList : tvState ref list ref
   val newTvStateRef
       : {lambdaDepth: lambdaDepth, kind : kind, utvarOpt: utvar option}

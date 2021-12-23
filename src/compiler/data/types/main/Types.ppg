@@ -251,35 +251,40 @@ struct
    *)
   type kindPropertyList =
       (*%
-       * @format({reify, boxed, unboxed, eq})
-       * dummy:sep()(dummy:sep()(dummy:sep()(
+       * @format({reify, boxed, unboxed, eq, hash})
+       * dummy:sep()(dummy:sep()(dummy:sep()(dummy:sep()(
        *   reify:iftrue()("#reify",), d,
        *   boxed:iftrue()("#boxed",)), d,
        *   unboxed:iftrue()("#unboxed",)), d,
-       *   eq:iftrue()("#eq",))
+       *   eq:iftrue()("#eq",)), d,
+       *   hash:iftrue()("#hash",))
        *)
       (*% @prefix print_ @ditto *)
       {
         reify : bool,
         boxed : bool,
         unboxed : bool,
-        eq : bool
+        eq : bool,
+        hash : bool
       }
 
-  datatype kindProperty = REIFY | BOXED | UNBOXED | EQ
+  datatype kindProperty = REIFY | BOXED | UNBOXED | EQ | HASH
   fun propertiesOf x = x
   val emptyProperties =
-      {reify = false, boxed = false, unboxed = false, eq = false}
+      {reify = false, boxed = false, unboxed = false, eq = false, hash = false}
   val eqProperties =
-      {reify = false, boxed = false, unboxed = false, eq = true}
+      {reify = false, boxed = false, unboxed = false, eq = true, hash = false}
   val reifyProperties =
-      {reify = true, boxed = false, unboxed = false, eq = false}
+      {reify = true, boxed = false, unboxed = false, eq = false, hash = false}
+  val hashProperties =
+      {reify = true, boxed = false, unboxed = false, eq = false, hash = true}
   fun isProperties BOXED {boxed, ...} = boxed
     | isProperties UNBOXED {unboxed, ...} = unboxed
     | isProperties REIFY {reify, ...} = reify
     | isProperties EQ {eq, ...} = eq
-  fun isSubProperties {reify=r1, boxed=b1, unboxed=u1, eq=e1}
-                      {reify=r2, boxed=b2, unboxed=u2, eq=e2} =
+    | isProperties HASH {hash, ...} = hash
+  fun isSubProperties {reify=r1, boxed=b1, unboxed=u1, eq=e1, hash=h1}
+                      {reify=r2, boxed=b2, unboxed=u2, eq=e2, hash=h2} =
       let
         fun implies (a,b) = not a orelse b
       in
@@ -287,19 +292,22 @@ struct
         andalso implies (b1, b2)
         andalso implies (u1, u2)
         andalso implies (e1, e2)
+        andalso implies (h1, h2)
       end
-  fun unionProperties {reify=r1, boxed=b1, unboxed=u1, eq=e1}
-                      {reify=r2, boxed=b2, unboxed=u2, eq=e2} =
+  fun unionProperties {reify=r1, boxed=b1, unboxed=u1, eq=e1, hash=h1}
+                      {reify=r2, boxed=b2, unboxed=u2, eq=e2, hash=h2} =
       {reify = r1 orelse r2,
        boxed = b1 orelse b2,
        unboxed = u1 orelse u2,
-       eq = e1 orelse e2}
-  fun addProperties prop {reify=r, boxed=b, unboxed=u, eq=e} =
+       eq = e1 orelse e2,
+       hash = h1 orelse h2}
+  fun addProperties prop {reify=r, boxed=b, unboxed=u, eq=e, hash=h} =
       case prop of
-        REIFY => {reify=true, boxed=b, unboxed=u, eq=e}
-      | BOXED => {reify=r, boxed=true, unboxed=u, eq=e}
-      | UNBOXED => {reify=r, boxed=b, unboxed=true, eq=e}
-      | EQ    => {reify=r, boxed=b, unboxed=u, eq=true}
+        REIFY => {reify=true, boxed=b, unboxed=u, eq=e, hash=h}
+      | BOXED => {reify=r, boxed=true, unboxed=u, eq=e, hash=h}
+      | UNBOXED => {reify=r, boxed=b, unboxed=true, eq=e, hash=h}
+      | EQ    => {reify=r, boxed=b, unboxed=u, eq=true, hash=h}
+      | HASH    => {reify=r, boxed=b, unboxed=u, eq=e, hash=true}
   fun equalProperties (prop1:kindPropertyList) prop2 = prop1 = prop2
 
   (*%
@@ -1261,6 +1269,10 @@ struct
   val emptyRecordKind = {kind = KIND {tvarKind = REC (RecordLabel.Map.empty), 
                                       properties = emptyProperties,
                                       dynamicKind=NONE},
+                         utvarOpt = NONE: utvar option}
+  val hashKind = {kind = KIND {tvarKind = UNIV, 
+                                properties = hashProperties,
+                                dynamicKind=NONE},
                          utvarOpt = NONE: utvar option}
 
   val kindedTyvarList =

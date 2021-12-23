@@ -895,6 +895,7 @@ print
         (case DataLabel.Map.find (#dataMap aliasMap, id) of
            SOME x => x
          | NONE => L.SYMBOL (dataLabelToSymbol id))
+      | M.NVHASH => (L.INTCONST (Word64.fromInt ~1))
 
   fun compileTopConst env (const, ty) =
       (compileTy ty, compileConst env const)

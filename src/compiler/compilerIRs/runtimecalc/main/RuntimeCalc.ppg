@@ -314,6 +314,7 @@ struct
         targetTy : ty,
         cast : BuiltinPrimitive.cast
       }
+    | NVHASH
 
   (*%
    * @formatter(bool) SmlppgUtil.formatBinaryChoice

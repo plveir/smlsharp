@@ -1120,6 +1120,7 @@ struct
       | R.CONST (L.FOREIGNSYMBOL {name, ty}) => ty
       | R.TAG (n, ty) => T.SINGLETONty (T.TAGty ty)
       | R.SIZE (n, ty) => T.SINGLETONty (T.SIZEty ty)
+      | R.HASH => BuiltinTypes.word32Ty
 
   fun compileTlint const =
       case const of
@@ -1149,6 +1150,7 @@ struct
       | R.CONST c => compileTlconst c
       | R.TAG (n, ty) => C.CVTAG {tag = n, ty = ty}
       | R.SIZE (n, ty) => C.CVSIZE {size = n, ty = ty}
+      | R.HASH => C.CVHASH
 
   fun getFunTy ty =
       case TypesBasics.derefTy ty of

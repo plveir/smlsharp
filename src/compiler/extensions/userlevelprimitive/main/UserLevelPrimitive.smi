@@ -133,6 +133,13 @@ struct
   val REIFY_exInfo_toReifiedTermPrint : Loc.loc -> Types.exVarInfo
   val REIFY_exInfo_typIdConSetListToConSetEnv : Loc.loc -> Types.exVarInfo
 
+  val HASH_tyCon_hashtbl : Loc.loc -> Types.tyCon
+  (* val HASH_icexp_create : Loc.loc -> IDCalc.icexp
+  val HASH_icexp_add : Loc.loc -> IDCalc.icexp *)
+  val HASH_icexp_find : Loc.loc -> IDCalc.icexp
+  val HASH_exInfo_find : Loc.loc -> Types.exVarInfo
+  val HASH_exInfo_add : Loc.loc -> Types.exVarInfo
+
   val initAnalyze : 
       {
        analyzeIdRef : Symbol.longsymbol * (Symbol.symbol * IDCalc.idstatus) -> unit,

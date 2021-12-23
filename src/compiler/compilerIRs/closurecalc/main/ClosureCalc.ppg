@@ -13,8 +13,8 @@ struct
    * @formatter(Types.ty) Types.format_ty
    *)
   type ty =
-      (*% @format(ty) ty *)
-      Types.ty
+    (*% @format(ty) ty *)
+    Types.ty
 
   (*%
    * @formatter(TypedLambda.varInfo) TypedLambda.format_varInfo
@@ -24,9 +24,9 @@ struct
    * @formatter(TypedLambda.varInfo) TypedLambda.formatWithType_varInfo
    *)
   type varInfo =
-      (*% *)
-      (*% @prefix formatWithType_ @format(v) v *)
-      TypedLambda.varInfo
+    (*% *)
+    (*% @prefix formatWithType_ @format(v) v *)
+    TypedLambda.varInfo
 
   (*%
    * @formatter(Types.exVarInfo) Types.format_exVarInfo
@@ -36,9 +36,9 @@ struct
    * @formatter(Types.exVarInfo) Types.formatWithType_exVarInfo
    *)
   type exVarInfo =
-      (*% *)
-      (*% @prefix formatWithType_ @format(v) v *)
-      Types.exVarInfo
+    (*% *)
+    (*% @prefix formatWithType_ @format(v) v *)
+    Types.exVarInfo
 
   (*%
    * @formatter(TypedLambda.primInfo) TypedLambda.format_primInfo
@@ -48,9 +48,9 @@ struct
    * @formatter(TypedLambda.primInfo) TypedLambda.formatWithType_primInfo
    *)
   type primInfo =
-      (*% *)
-      (*% @prefix formatWithType_ @format(x) x *)
-      TypedLambda.primInfo
+    (*% *)
+    (*% @prefix formatWithType_ @format(x) x *)
+    TypedLambda.primInfo
 
   (*%
    * @formatter(Int8.int) ConstFormat.format_int8_dec_ML
@@ -100,231 +100,232 @@ struct
    * @formatter(ty) format_ty
    *)
   datatype ccconst =
-      (*%
+    (*%
        * @format(x) x
        *)
-      (*% @prefix formatWithType_
+    (*% @prefix formatWithType_
        * @format(x) x
        *)
-      CVINT8 of Int8.int
-    | (*%
+    CVINT8 of Int8.int
+  | (*%
        * @format(x) x
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format(x) x
        *)
-      CVINT16 of Int16.int
-    | (*%
+  CVINT16 of Int16.int
+  | (*%
        * @format(x) x
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format(x) x
        *)
-      CVINT32 of Int32.int
-    | (*%
+  CVINT32 of Int32.int
+  | (*%
        * @format(x) x
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format(x) x
        *)
-      CVINT64 of Int64.int
-    | (*%
+  CVINT64 of Int64.int
+  | (*%
        * @format(x) x
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format(x) x
        *)
-      CVWORD8 of Word8.word
-    | (*%
+  CVWORD8 of Word8.word
+  | (*%
        * @format(x) x
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format(x) x
        *)
-      CVWORD16 of Word16.word
-    | (*%
+  CVWORD16 of Word16.word
+  | (*%
        * @format(x) x
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format(x) x
        *)
-      CVWORD32 of Word32.word
-    | (*%
+  CVWORD32 of Word32.word
+  | (*%
        * @format(x) x
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format(x) x
        *)
-      CVWORD64 of Word64.word
-    | (*%
+  CVWORD64 of Word64.word
+  | (*%
        * @format(x) x
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format(x) x
        *)
-      CVCONTAG of Word32.word
-    | (*%
+  CVCONTAG of Word32.word
+  | (*%
        * @format(x) x "f"
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format(x) x "f"
        *)
-      CVREAL64 of Real64.real
-    | (*%
+  CVREAL64 of Real64.real
+  | (*%
        * @format(x) x "sf"
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format(x) x "sf"
        *)
-      CVREAL32 of Real32.real
-    | (*%
+  CVREAL32 of Real32.real
+  | (*%
        * @format(x) x
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format(x) x
        *)
-      CVCHAR of Char.char
-    | (*%
+  CVCHAR of Char.char
+  | (*%
        * @format "()"
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format "()"
        *)
-      CVUNIT
-    | (*%
+  CVUNIT
+  | (*%
        * @format "NULLPOINTER"
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format "NULLPOINTER"
        *)
-      CVNULLPOINTER
-    | (*%
+  CVNULLPOINTER
+  | (*%
        * @format "NULLBOXED"
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format "NULLBOXED"
        *)
-      CVNULLBOXED
-    | (*%
+  CVNULLBOXED
+  | (*%
        * @format({name, ty}) "@globl:" name
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({name, ty})
        * L2{ "@globl:" name +1 ":" +d ty }
        *)
-      CVFOREIGNSYMBOL of
-      {
-        name : string,
-        ty : ty
-      }
-    | (*%
+  CVFOREIGNSYMBOL of
+  {
+    name : string,
+    ty : ty
+  }
+  | (*%
        * @format({id, codeEntryTy}) "@fun:" id
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({id, codeEntryTy}) 
        * L2{ "@fun:" id +1 "of" +d codeEntryTy }
        *)
-      CVFUNENTRY of  (* FUNENTRYty *)
-      {
-        id: FunEntryLabel.id,
-        codeEntryTy: Types.codeEntryTy
-      }
-    | (*%
+  CVFUNENTRY of  (* FUNENTRYty *)
+  {
+    id: FunEntryLabel.id,
+    codeEntryTy: Types.codeEntryTy
+  }
+  | (*%
        * @format({id, codeEntryTy}) "@fun:" id
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({id, codeEntryTy})
        * L2{ "@wrap:" id +1 "of" +d codeEntryTy }
        *)
-      (* calling convention wrapper of function id *)
-      CVFUNWRAPPER of  (* FUNWRAPPERty *)
-      {
-        id: FunEntryLabel.id,
-        codeEntryTy: Types.codeEntryTy
-      }
-    | (*%
+  (* calling convention wrapper of function id *)
+  CVFUNWRAPPER of  (* FUNWRAPPERty *)
+  {
+    id: FunEntryLabel.id,
+    codeEntryTy: Types.codeEntryTy
+  }
+  | (*%
        * @format({id, codeEntryTy}) "@exfun:" id
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({id, codeEntryTy}) 
        * L2{ "@exfun:" id +1 "of" +d codeEntryTy }
        *)
-      CVEXFUNENTRY of  (* FUNENTRYty *)
-      {
-        id: ExternFunSymbol.id,
-        codeEntryTy: Types.codeEntryTy
-      }
-    | (*%
+  CVEXFUNENTRY of  (* FUNENTRYty *)
+  {
+    id: ExternFunSymbol.id,
+    codeEntryTy: Types.codeEntryTy
+  }
+  | (*%
        * @format({id, callbackEntryTy}) "@cbent:" id
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({id, callbackEntryTy})
        * L2{ "@cbent:" id +1 "of" +d callbackEntryTy }
        *)
-      CVCALLBACKENTRY of  (* CALLBACKENTRYty *)
-      {
-        id: CallbackEntryLabel.id,
-        callbackEntryTy: Types.callbackEntryTy
-      }
-    | (*%
+  CVCALLBACKENTRY of  (* CALLBACKENTRYty *)
+  {
+    id: CallbackEntryLabel.id,
+    callbackEntryTy: Types.callbackEntryTy
+  }
+  | (*%
        * @format({id, ty}) "@data:" id
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({id, ty})
        * L2{ "@data:" id +1 ":" +d ty }
        *)
-      CVTOPDATA of {id: DataLabel.id, ty: ty}   (* ty *)
-    | (*%
+  CVTOPDATA of {id: DataLabel.id, ty: ty}   (* ty *)
+  | (*%
        * @format(id) "@ex:" id
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format(id) "@ex:" id
        *)
-      CVEXTRADATA of ExtraDataLabel.id
-    | (*%
+  CVEXTRADATA of ExtraDataLabel.id
+  | (*%
        * @format({value, valueTy, targetTy, cast})
        * cast "(" !N0{ value ")" }
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({value, valueTy, targetTy, cast})
        * L2{ cast "(" !L2{ value +1 ":" +d valueTy ")" }
        *     +1 "to" +d targetTy }
        *)
-      CVCAST of
-      {
-        value : ccconst,
-        valueTy : ty,
-        targetTy : ty,
-        cast : BuiltinPrimitive.cast
-      }
-    | (*%
+  CVCAST of
+  {
+    value : ccconst,
+    valueTy : ty,
+    targetTy : ty,
+    cast : BuiltinPrimitive.cast
+  }
+  | (*%
        * @format({tag, ty}) tag
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({tag, ty}) tag
        *)
-      CVTAG of {tag : RuntimeTypes.tag, ty : ty}
-    | (*%
+  CVTAG of {tag : RuntimeTypes.tag, ty : ty}
+  | (*%
        * @format({size, ty}) size
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({size, ty}) size
        *)
-      CVSIZE of {size : RuntimeTypes.size, ty : ty}
-    | (*%
+  CVSIZE of {size : RuntimeTypes.size, ty : ty}
+  | (*%
        * @format(ty) "_cconvtag(" ty ")"
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format(ty) "_cconvtag(" ty ")"
        *)
-      CVCCONVTAG of Types.codeEntryTy   (* CCONVTAGty ty *)
-    | (*%
+  CVCCONVTAG of Types.codeEntryTy   (* CCONVTAGty ty *)
+  | (*%
        * @format(c1 * c2) "_orb(" c1 "," c2 ")"
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format(c1 * c2) "_orb(" c1 "," c2 ")"
        *)
-      CVWORD32_ORB of ccconst * ccconst
+  CVWORD32_ORB of ccconst * ccconst
+  | CVHASH
 
   (*%
    * @formatter(bool) SmlppgUtil.formatBinaryChoice
@@ -361,29 +362,29 @@ struct
    * @formatter(RecordLabel.label) RecordLabel.format_label
    *)
   datatype cconv =
-      (*%
+    (*%
        * @format(ty) ty
        *)
-      (*% @prefix formatWithType_
+    (*% @prefix formatWithType_
        * @format(ty) ty
        *)
-      STATICCALL of Types.codeEntryTy
-    | (*%
+    STATICCALL of Types.codeEntryTy
+  | (*%
        * @format({cconvTag, wrapper})
        * cconvTag "," +1 wrapper
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({cconvTag, wrapper})
        * cconvTag "," +1 wrapper
        *)
-      DYNAMICCALL of
-      {
-        cconvTag: ccexp,   (* SOME_CCONVTAGty *)
-        wrapper: ccexp     (* SOME_FUNWRAPPERty *)
-      }
+  DYNAMICCALL of
+  {
+    cconvTag: ccexp,   (* SOME_CCONVTAGty *)
+    wrapper: ccexp     (* SOME_FUNWRAPPERty *)
+  }
 
   and ccexp =
-      (*%
+    (*%
        * @format({funExp, attributes, argExpList: arg args, resultTy, loc})
        * L8{ 1[
        *   "_ffiapply"
@@ -391,7 +392,7 @@ struct
        *   +1 args:appList(arg)("(",",",")")
        * ] }
        *)
-      (*%
+    (*%
        * @prefix formatWithType_
        * @format({funExp, attributes, argExpList: arg args, resultTy, loc})
        * L8{ 1[
@@ -400,15 +401,15 @@ struct
        *   +1 args:appList(arg)("(",",",")")
        * ] }
        *)
-      CCFOREIGNAPPLY of
-      {
-        funExp : ccexp,   (* codeptrTy *)
-        argExpList : ccexp list,
-        attributes : FFIAttributes.attributes,
-        resultTy : ty option,
-        loc : loc
-      }
-    | (*%
+    CCFOREIGNAPPLY of
+    {
+      funExp : ccexp,   (* codeptrTy *)
+      argExpList : ccexp list,
+      attributes : FFIAttributes.attributes,
+      resultTy : ty option,
+      loc : loc
+    }
+  | (*%
        * @format({codeExp, closureEnvExp, instTyvars, resultTy, loc})
        * L8{ 1[
        *   "_exportcallback"
@@ -416,7 +417,7 @@ struct
        *   +1 closureEnvExp
        * ] }
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({codeExp, closureEnvExp, instTyvars, resultTy, loc})
        * L8{ 1[
        *   "_exportcallback"
@@ -424,54 +425,54 @@ struct
        *   +1 closureEnvExp
        * ] }
        *)
-      CCEXPORTCALLBACK of
-      {
-        codeExp : ccexp,
-        closureEnvExp : ccexp,
-        instTyvars : Types.btvEnv,
-        resultTy : ty,
-        loc : loc
-      }
-    | (*%
+  CCEXPORTCALLBACK of
+  {
+    codeExp : ccexp,
+    closureEnvExp : ccexp,
+    instTyvars : Types.btvEnv,
+    resultTy : ty,
+    loc : loc
+  }
+  | (*%
        * @format({const, ty, loc}) const
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({const, ty, loc}) L2{ const +1 ":" +d ty }
        *)
-      CCCONST of {const: ccconst, ty : ty, loc: loc}
-    | (*%
+  CCCONST of {const: ccconst, ty : ty, loc: loc}
+  | (*%
        * @format({srcLabel, loc}) "IntInf(" "@ex:" srcLabel ")"
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({srcLabel, loc}) "IntInf(" "@ex:" srcLabel ")"
        *)
-      CCINTINF of {srcLabel: ExtraDataLabel.id, loc: loc}
-    | (*%
+  CCINTINF of {srcLabel: ExtraDataLabel.id, loc: loc}
+  | (*%
        * @format({varInfo, loc}) varInfo
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({varInfo, loc}) varInfo
        *)
-      CCVAR of {varInfo : varInfo, loc : loc}
-    | (*%
+  CCVAR of {varInfo : varInfo, loc : loc}
+  | (*%
        * @format({id, ty, loc})
        * "@ext:" id
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({id, ty, loc})
        * "@ext:" id
        *)
-      CCEXVAR of
-      {
-        id : ExternSymbol.id,
-        ty : ty,
-        loc : loc
-      }
-    | (*%
+  CCEXVAR of
+  {
+    id : ExternSymbol.id,
+    ty : ty,
+    loc : loc
+  }
+  | (*%
        * @format({primInfo, argExpList: arg args,
        *          instTyList: ty tys,
        *          instTagList: tag tags, instSizeList: size sizes, loc})
@@ -483,7 +484,7 @@ struct
        *   +1 args:appList(arg)("(",",",")")
        * ] }
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({primInfo, argExpList: arg args,
        *          instTyList: ty tys,
@@ -496,16 +497,16 @@ struct
        *   +1 args:appList(arg)("(",",",")")
        * ] }
        *)
-      CCPRIMAPPLY of
-      {
-        primInfo : primInfo,
-        argExpList : ccexp list,
-        instTyList : ty list,
-        instTagList : ccexp list,
-        instSizeList : ccexp list,
-        loc : loc
-      }
-    | (*%
+  CCPRIMAPPLY of
+  {
+    primInfo : primInfo,
+    argExpList : ccexp list,
+    instTyList : ty list,
+    instTagList : ccexp list,
+    instSizeList : ccexp list,
+    loc : loc
+  }
+  | (*%
        * @format({codeExp, closureEnvExp, argExpList: arg args, cconv, funTy,
        *          loc})
        * L8{ 1[
@@ -516,7 +517,7 @@ struct
        *   +1 args:appList(arg)("(",",",")")
        * ] }
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({codeExp, closureEnvExp, argExpList: arg args, cconv, funTy,
        *          loc})
@@ -528,23 +529,23 @@ struct
        *   +1 args:appList(arg)("(",",",")")
        * ] }
        *)
-      CCCALL of
-      {
-        codeExp : ccexp,        (* FUNENTRYty *)
-        closureEnvExp : ccexp,  (* EXISTS_CLOSUREENVty *)
-        argExpList : ccexp list,
-        cconv : cconv,
-        funTy : ty,
-        loc : loc
-      }
-    | (*%
+  CCCALL of
+  {
+    codeExp : ccexp,        (* FUNENTRYty *)
+    closureEnvExp : ccexp,  (* EXISTS_CLOSUREENVty *)
+    argExpList : ccexp list,
+    cconv : cconv,
+    funTy : ty,
+    loc : loc
+  }
+  | (*%
        * @format({boundVar, boundExp, mainExp, loc})
        * R1{
        *   "let" +d boundVar +d "=" 1[ +1 boundExp ]
        *   +1 "in" +1 mainExp
        * }
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({boundVar, boundExp, mainExp, loc})
        * R1{
@@ -553,14 +554,14 @@ struct
        *   +1 "end"
        * }
        *)
-      CCLET of
-      {
-        boundVar : varInfo,
-        boundExp : ccexp,
-        mainExp : ccexp,
-        loc : loc
-      }
-    | (*%
+  CCLET of
+  {
+    boundVar : varInfo,
+    boundExp : ccexp,
+    mainExp : ccexp,
+    loc : loc
+  }
+  | (*%
        * @format({fieldList: field fields,
        *          recordTy, isMutable, clearPad, allocSizeExp,
        *          bitmaps: bm bms, loc})
@@ -581,7 +582,7 @@ struct
        * L8{ "[" !N0{ bitmapIndex "]" }
        *     +1 bitmapExp }
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({fieldList: field fields,
        *          recordTy, isMutable, clearPad, allocSizeExp,
@@ -605,23 +606,23 @@ struct
        * L8{ "[" !N0{ bitmapIndex "]" }
        *     +1 bitmapExp }
        *)
-      CCRECORD of
-      {
-        fieldList : {fieldExp : ccexp,
-                     fieldTy : ty,
-                     fieldLabel : RecordLabel.label,
-                     fieldSize : ccexp,
-                     fieldTag : ccexp,
-                     fieldIndex : ccexp} list,
-        recordTy : ty,
-        isMutable : bool,
-        clearPad : bool,
-        allocSizeExp : ccexp,
-        bitmaps : {bitmapIndex : ccexp,
-                   bitmapExp : ccexp} list,
-        loc : loc
-      }
-    | (*%
+  CCRECORD of
+  {
+    fieldList : {fieldExp : ccexp,
+      fieldTy : ty,
+      fieldLabel : RecordLabel.label,
+      fieldSize : ccexp,
+      fieldTag : ccexp,
+      fieldIndex : ccexp} list,
+    recordTy : ty,
+    isMutable : bool,
+    clearPad : bool,
+    allocSizeExp : ccexp,
+    bitmaps : {bitmapIndex : ccexp,
+      bitmapExp : ccexp} list,
+    loc : loc
+  }
+  | (*%
        * @format({recordExp, indexExp, label, recordTy, resultTy, resultSize,
        *          resultTag, loc})
        * L8{ 1[
@@ -632,7 +633,7 @@ struct
        *  +1 recordExp
        * ] }
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({recordExp, indexExp, label, recordTy, resultTy, resultSize,
        *          resultTag, loc})
@@ -644,18 +645,18 @@ struct
        *  +1 recordExp
        * ] }
        *)
-      CCSELECT of
-      {
-        recordExp : ccexp,
-        indexExp : ccexp,
-        label : RecordLabel.label,
-        recordTy : ty,
-        resultTy : ty,
-        resultTag : ccexp,
-        resultSize : ccexp,
-        loc : loc
-      }
-    | (*%
+  CCSELECT of
+  {
+    recordExp : ccexp,
+    indexExp : ccexp,
+    label : RecordLabel.label,
+    recordTy : ty,
+    resultTy : ty,
+    resultTag : ccexp,
+    resultSize : ccexp,
+    loc : loc
+  }
+  | (*%
        * @format({recordExp, recordTy, indexExp, label, valueExp, valueTy,
        *          valueSize, valueTag, loc})
        * L8{ 1[
@@ -670,7 +671,7 @@ struct
        *      "}"
        * ] }
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({recordExp, recordTy, indexExp, label, valueExp, valueTy,
        *          valueSize, valueTag, loc})
@@ -687,26 +688,26 @@ struct
        *      "}"
        * ] }
        *)
-      CCMODIFY of
-      {
-        recordExp : ccexp,
-        recordTy : ty,
-        indexExp : ccexp,
-        label : RecordLabel.label,
-        valueExp : ccexp,
-        valueTy : ty,
-        valueTag : ccexp,
-        valueSize : ccexp,
-        loc : loc
-      }
-    | (*%
+  CCMODIFY of
+  {
+    recordExp : ccexp,
+    recordTy : ty,
+    indexExp : ccexp,
+    label : RecordLabel.label,
+    valueExp : ccexp,
+    valueTy : ty,
+    valueTag : ccexp,
+    valueSize : ccexp,
+    loc : loc
+  }
+  | (*%
        * @format({argExp, resultTy, loc})
        * !R1{ 1[
        *   "raise"
        *   +1 argExp
        * ] }
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({argExp, resultTy, loc})
        * L2{
@@ -716,13 +717,13 @@ struct
        * ] }
        * +1 ":" +d resultTy }
        *)
-      CCRAISE of
-      {
-        argExp : ccexp,
-        resultTy : ty,
-        loc : loc
-      }
-    | (*%
+  CCRAISE of
+  {
+    argExp : ccexp,
+    resultTy : ty,
+    loc : loc
+  }
+  | (*%
        * @format({tryExp, exnVar, handlerExp, resultTy, loc})
        * R1{
        *   "try"
@@ -732,7 +733,7 @@ struct
        *   +1 "end"
        * }
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({tryExp, exnVar, handlerExp, resultTy, loc})
        * L2{
@@ -745,15 +746,15 @@ struct
        * }
        * +1 ":" +d resultTy }
        *)
-      CCHANDLE of
-      {
-        tryExp : ccexp,
-        exnVar : varInfo,
-        handlerExp : ccexp,
-        resultTy : ty,
-        loc : loc
-      }
-    | (*%
+  CCHANDLE of
+  {
+    tryExp : ccexp,
+    exnVar : varInfo,
+    handlerExp : ccexp,
+    resultTy : ty,
+    loc : loc
+  }
+  | (*%
        * @format({switchExp, expTy, branches: branch branches, defaultExp,
        *          resultTy, loc})
        * R1{
@@ -769,7 +770,7 @@ struct
        * @format:branch({constant, branchExp})
        * !N0{ R1{ constant +d "=>" +1 branchExp } }
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({switchExp, expTy, branches: branch branches, defaultExp,
        *          resultTy, loc})
@@ -786,16 +787,16 @@ struct
        * @format:branch({constant, branchExp})
        * !N0{ R1{ constant +d "=>" +1 branchExp } }
        *)
-      CCSWITCH of
-      {
-        switchExp : ccexp,
-        expTy : ty,
-        branches : {constant : ccconst, branchExp : ccexp} list,
-        defaultExp : ccexp,
-        resultTy : ty,
-        loc : loc
-      }
-    | (*%
+  CCSWITCH of
+  {
+    switchExp : ccexp,
+    expTy : ty,
+    branches : {constant : ccconst, branchExp : ccexp} list,
+    defaultExp : ccexp,
+    resultTy : ty,
+    loc : loc
+  }
+  | (*%
        * @format({catchLabel, argVarList: arg args, catchExp, tryExp, resultTy,
        *          loc})
        * R0{ tryExp
@@ -805,7 +806,7 @@ struct
        *              +1 1[ args:appList(arg)("{",",","}") ] }
        *          +d "=>" 1[ +1 catchExp ] } }
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({catchLabel, argVarList: arg args, catchExp, tryExp, resultTy,
        *          loc})
@@ -818,23 +819,23 @@ struct
        *          +d "=>" 1[ +1 catchExp ] } }
        *   +1 ":" +d resultTy }
        *)
-      (* lightweight exception that unwind call stack *)
-      CCCATCH of
-      {
-        catchLabel : FunLocalLabel.id,
-        argVarList : varInfo list,
-        catchExp : ccexp,
-        tryExp : ccexp,
-        resultTy : ty,
-        loc : loc
-      }
-    | (*%
+  (* lightweight exception that unwind call stack *)
+  CCCATCH of
+  {
+    catchLabel : FunLocalLabel.id,
+    argVarList : varInfo list,
+    catchExp : ccexp,
+    tryExp : ccexp,
+    resultTy : ty,
+    loc : loc
+  }
+  | (*%
        * @format({catchLabel, argExpList: arg args, resultTy, loc})
        * R0{ "_throw"
        *     1[ +1 L8{ catchLabel
        *               +1 1[ args:appList(arg)("{",",","}") ] } ] }
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({catchLabel, argExpList: arg args, resultTy, loc})
        * L2{
        *   R0{ "_throw"
@@ -842,34 +843,34 @@ struct
        *               +1 1[ args:appList(arg)("{",",","}") ] } ] }
        *   +1 ":" +d resultTy }
        *)
-      (* lightweight exception that does not unwind call stack *)
-      CCTHROW of
-      {
-        catchLabel : FunLocalLabel.id,
-        argExpList : ccexp list,
-        resultTy : ty,
-        loc : loc
-      }
-    | (*%
+  (* lightweight exception that does not unwind call stack *)
+  CCTHROW of
+  {
+    catchLabel : FunLocalLabel.id,
+    argExpList : ccexp list,
+    resultTy : ty,
+    loc : loc
+  }
+  | (*%
        * @format({exp, expTy, targetTy, cast, loc})
        * cast "(" !N0{ exp ")" }
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({exp, expTy, targetTy, cast, loc})
        * L2{
        * cast "(" !L2{ exp +1 ":" +d expTy ")" }
        * +1 ":" +d targetTy }
        *)
-      CCCAST of
-      {
-        exp : ccexp,
-        expTy : ty,
-        targetTy : ty,
-        cast : BuiltinPrimitive.cast,
-        loc : loc
-      }
-    | (*%
+  CCCAST of
+  {
+    exp : ccexp,
+    expTy : ty,
+    targetTy : ty,
+    cast : BuiltinPrimitive.cast,
+    loc : loc
+  }
+  | (*%
        * @format({id, ty, valueExp, loc})
        * L8{ 1[
        *   "_export"
@@ -877,7 +878,7 @@ struct
        *   +1 valueExp
        * ] }
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({id, ty, valueExp, loc})
        * L8{ 1[
@@ -886,22 +887,22 @@ struct
        *   +1 valueExp
        * ] }
        *)
-      CCEXPORTVAR of
-      {
-        id : ExternSymbol.id,
-        ty : ty,
-        valueExp : ccexp,
-        loc : loc
-      }
+  CCEXPORTVAR of
+  {
+    id : ExternSymbol.id,
+    ty : ty,
+    valueExp : ccexp,
+    loc : loc
+  }
 
   (*%
    *)
   (*% @prefix formatWithType_
    *)
   type topconst =
-      (*% @format(const * ty) const *)
-      (*% @prefix formatWithType_ @format(const * ty) const *)
-      ccconst * ty
+    (*% @format(const * ty) const *)
+    (*% @prefix formatWithType_ @format(const * ty) const *)
+    ccconst * ty
 
   (*%
    * @formatter(FunEntryLabel.id) FunEntryLabel.format_id
@@ -916,7 +917,7 @@ struct
    * @formatter(appList) TermFormat.formatAppList
    *)
   datatype topdec =
-      (*%
+    (*%
        * @format({id, tyvarKindEnv, argVarList: arg args,
        *          closureEnvVar: env envOpt, bodyExp, retTy, loc})
        * "@fun:" id
@@ -925,7 +926,7 @@ struct
        * + "="
        * 1[ +1 bodyExp ]
        *)
-      (*% @prefix formatWithType_
+    (*% @prefix formatWithType_
        * @format({id, tyvarKindEnv, argVarList: arg args,
        *          closureEnvVar: env envOpt, bodyExp, retTy, loc})
        * "@fun:" id
@@ -934,17 +935,17 @@ struct
        * + "="
        * 1[ +1 bodyExp ]
        *)
-      CTFUNCTION of
-      {
-        id : FunEntryLabel.id,
-        tyvarKindEnv : Types.btvEnv,
-        argVarList : varInfo list,
-        closureEnvVar : varInfo option,
-        bodyExp : ccexp,
-        retTy : ty,
-        loc : loc
-      }
-    | (*%
+    CTFUNCTION of
+    {
+      id : FunEntryLabel.id,
+      tyvarKindEnv : Types.btvEnv,
+      argVarList : varInfo list,
+      closureEnvVar : varInfo option,
+      bodyExp : ccexp,
+      retTy : ty,
+      loc : loc
+    }
+  | (*%
        * @format({id, tyvarKindEnv, argVarList: arg args,
        *          closureEnvVar: env envOpt, bodyExp,
        *          attributes, retTy, loc})
@@ -954,7 +955,7 @@ struct
        * + "="
        * 1[ +1 bodyExp ]
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({id, tyvarKindEnv, argVarList: arg args,
        *          closureEnvVar: env envOpt, bodyExp,
        *          attributes, retTy, loc})
@@ -964,17 +965,17 @@ struct
        * + "="
        * 1[ +1 bodyExp ]
        *)
-      CTCALLBACKFUNCTION of
-      {
-        id : CallbackEntryLabel.id,
-        tyvarKindEnv : Types.btvEnv,
-        argVarList : varInfo list,
-        closureEnvVar : varInfo option,
-        bodyExp : ccexp,
-        attributes : FFIAttributes.attributes,
-        retTy : ty option,
-        loc : loc
-      }
+  CTCALLBACKFUNCTION of
+  {
+    id : CallbackEntryLabel.id,
+    tyvarKindEnv : Types.btvEnv,
+    argVarList : varInfo list,
+    closureEnvVar : varInfo option,
+    bodyExp : ccexp,
+    attributes : FFIAttributes.attributes,
+    retTy : ty option,
+    loc : loc
+  }
 
   (*%
    * @formatter(option) SmlppgUtil.formatOptWithDefault
@@ -1003,46 +1004,46 @@ struct
    * @formatter(Types.btvEnv) Types.format_btvEnv
    *)
   datatype topdata =
-      (*%
+    (*%
        * @format({id, ty, provider, loc})
        * L2{ "@ext:" id 1[ +1 ":" +d ty ] }
        *)
-      (*%
+    (*%
        * @prefix formatWithType_
        * @format({id, ty, provider, loc})
        * L2{ "@ext:" id 1[ +1 ":" +d ty ] }
        *)
-      CTEXTERNVAR of
-      {
-        id : ExternSymbol.id,
-        ty : ty,
-        provider : Types.provider,
-        loc : loc
-      }
-    | (*%
+    CTEXTERNVAR of
+    {
+      id : ExternSymbol.id,
+      ty : ty,
+      provider : Types.provider,
+      loc : loc
+    }
+  | (*%
        * @format({id, weak, ty, value: value valueOpt, loc})
        * weak()("weak" +d,)
        * "@ext:" id + "=" 1[ +1 valueOpt(value)("_undef") ]
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({id, weak, ty, value: value valueOpt, loc})
        * weak()("weak" +d,)
        * "@ext:" id + "=" 1[ +1 valueOpt(value)("_undef") ]
        *)
-      CTEXPORTVAR of
-      {
-        id : ExternSymbol.id,
-        weak : bool,
-        ty : ty,
-        value : topconst option,
-        loc : loc
-      }
-    | (*%
+  CTEXPORTVAR of
+  {
+    id : ExternSymbol.id,
+    weak : bool,
+    ty : ty,
+    value : topconst option,
+    loc : loc
+  }
+  | (*%
        * @format({id, tyvars, argTyList, retTy, provider, loc})
        * "@exfun:" id
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({id, tyvars, argTyList: argTy argTys, retTy, provider, loc})
        * L2{ "@exfun:" id 1[ +1 ":" +d
@@ -1054,59 +1055,59 @@ struct
        *   ] "]" }
        * ] }
        *)
-      CTEXTERNFUN of
-      {
-        id : ExternFunSymbol.id,
-        tyvars : Types.btvEnv,
-        argTyList : ty list,
-        retTy : ty,
-        provider : Types.provider,
-        loc : loc
-      }
-    | (*%
+  CTEXTERNFUN of
+  {
+    id : ExternFunSymbol.id,
+    tyvars : Types.btvEnv,
+    argTyList : ty list,
+    retTy : ty,
+    provider : Types.provider,
+    loc : loc
+  }
+  | (*%
        * @format({id, funId, loc})
        * "@exfun:" id + "=" +d funId
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({id, funId, loc})
        * "@exfun:" id + "=" +d funId
        *)
-      CTEXPORTFUN of
-      {
-        id : ExternFunSymbol.id,
-        funId : FunEntryLabel.id,
-        loc : loc
-      }
-    | (*%
+  CTEXPORTFUN of
+  {
+    id : ExternFunSymbol.id,
+    funId : FunEntryLabel.id,
+    loc : loc
+  }
+  | (*%
        * @format({id, string, loc})
        * "@data:" id " = " string
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({id, string, loc})
        * "@data:" id " = " string
        *)
-      CTSTRING of
-      {
-        id : DataLabel.id,
-        string : string,
-        loc : loc
-      }
-    | (*%
+  CTSTRING of
+  {
+    id : DataLabel.id,
+    string : string,
+    loc : loc
+  }
+  | (*%
        * @format({id, value, loc})
        * "CTINTINF"
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({id, value, loc})
        * "CTINTINF"
        *)
-      CTINTINF of
-      {
-        id : ExtraDataLabel.id,
-        value : IntInf.int,
-        loc : loc
-      }
-    | (*%
+  CTINTINF of
+  {
+    id : ExtraDataLabel.id,
+    value : IntInf.int,
+    loc : loc
+  }
+  | (*%
        * @format({id, tyvarKindEnv, fieldList: field fields,
        *          recordTy, isMutable, isCoalescable, clearPad,
        *          bitmaps: bm bms, loc})
@@ -1123,7 +1124,7 @@ struct
        * L8{ "[" !N0{ bitmapIndex "]" }
        *     +1 bitmapExp }
        *)
-      (*%
+  (*%
        * @prefix formatWithType_
        * @format({id, tyvarKindEnv, fieldList: field fields,
        *          recordTy, isMutable, isCoalescable, clearPad,
@@ -1143,24 +1144,24 @@ struct
        * L8{ "[" !N0{ bitmapIndex "]" }
        *     +1 bitmapExp }
        *)
-      CTRECORD of
-      {
-        id : DataLabel.id,
-        tyvarKindEnv : Types.btvEnv,
-        fieldList : {fieldExp : topconst,
-                     fieldTy : ty,
-                     fieldLabel : RecordLabel.label,
-                     fieldSize : topconst,
-                     fieldIndex : topconst} list,
-        recordTy : ty,
-        isMutable : bool,
-        isCoalescable : bool,
-        clearPad : bool,
-        bitmaps : {bitmapIndex : topconst,
-                   bitmapExp : topconst} list,
-        loc : loc
-      }
-    | (*%
+  CTRECORD of
+  {
+    id : DataLabel.id,
+    tyvarKindEnv : Types.btvEnv,
+    fieldList : {fieldExp : topconst,
+      fieldTy : ty,
+      fieldLabel : RecordLabel.label,
+      fieldSize : topconst,
+      fieldIndex : topconst} list,
+    recordTy : ty,
+    isMutable : bool,
+    isCoalescable : bool,
+    clearPad : bool,
+    bitmaps : {bitmapIndex : topconst,
+      bitmapExp : topconst} list,
+    loc : loc
+  }
+  | (*%
        * @format({id, elemTy, isMutable, isCoalescable, clearPad, numElements,
        *          initialElements : elem elems,
        *          elemSizeExp, tagExp, loc})
@@ -1169,7 +1170,7 @@ struct
        *     +1 "/b" +d tagExp }
        * ]
        *)
-      (*% @prefix formatWithType_
+  (*% @prefix formatWithType_
        * @format({id, elemTy, isMutable, isCoalescable, clearPad, numElements,
        *          initialElements : elem elems,
        *          elemSizeExp, tagExp, loc})
@@ -1180,19 +1181,19 @@ struct
        * +1 ":" +d elemTy + "array" }
        * ]
        *)
-      CTARRAY of
-      {
-        id : DataLabel.id,
-        elemTy : ty,
-        isMutable : bool,
-        isCoalescable : bool,
-        clearPad : bool,
-        numElements : topconst,
-        initialElements : topconst list,
-        elemSizeExp : topconst,
-        tagExp : topconst,
-        loc : loc
-      }
+  CTARRAY of
+  {
+    id : DataLabel.id,
+    elemTy : ty,
+    isMutable : bool,
+    isCoalescable : bool,
+    clearPad : bool,
+    numElements : topconst,
+    initialElements : topconst list,
+    elemSizeExp : topconst,
+    tagExp : topconst,
+    loc : loc
+  }
 
   (*%
    * @formatter(decList) TermFormat.formatDeclList
@@ -1201,7 +1202,7 @@ struct
    * @formatter(decList) TermFormat.formatDeclList
    *)
   type program =
-      (*%
+    (*%
        * @format({topdata: datum data, topdecs: dec decs, topExp})
        * "_decl"
        * 1[ data:decList(datum)(+1,+1) ]
@@ -1209,7 +1210,7 @@ struct
        * +1 "in" 1[ +1 !N0{ topExp } ]
        * +1 "end"
        *)
-      (*% @prefix formatWithType_
+    (*% @prefix formatWithType_
        * @format({topdata: datum data, topdecs: dec decs, topExp})
        * "_decl"
        * 1[ data:decList(datum)(+1,+1) ]
@@ -1217,11 +1218,11 @@ struct
        * +1 "in" 1[ +1 !N0{ topExp } ]
        * +1 "end"
        *)
-      {
-        (* toplevel bindings are mutual recursive *)
-        topdata : topdata list,
-        topdecs : topdec list,
-        topExp : ccexp
-      }
+    {
+      (* toplevel bindings are mutual recursive *)
+      topdata : topdata list,
+      topdecs : topdec list,
+      topExp : ccexp
+    }
 
 end
