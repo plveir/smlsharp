@@ -7,7 +7,9 @@ struct
 local
   structure I = IDCalc
   structure T = Types
+(*
   structure U = Unify
+*)
   (* structure DK = DynamicKind *)
 
   structure TB = TypesBasics
@@ -19,9 +21,12 @@ local
   fun printPath path =
       debugPrint (String.concatWith "." path)
 
+(*
   type freeTvarEnv = T.ty TvarID.Map.map ref
   val freeTvarEnv = ref TvarID.Map.empty : freeTvarEnv
+*)
 in
+(*
   fun resetFreeTvarEnv () = freeTvarEnv := TvarID.Map.empty
   fun setFreeTvarEnv (id, ty1) = 
       let
@@ -32,6 +37,7 @@ in
       in
         freeTvarEnv := TvarID.Map.insert(!freeTvarEnv, id, ty1)
       end
+*)
       
   type ityContext = {oprimEnv:I.ty OPrimMap.map,
                      tvarEnv:Types.ty TvarMap.map, 
@@ -164,7 +170,10 @@ in
                                    dynamicKind = NONE},
                     utvarOpt = NONE : T.utvar option}
         val newTy = T.newty kind
+(*
         val _ = setFreeTvarEnv (id, newTy)
+*)
+        val _ = raise Bug.Bug "FIXME: TYFREE_TYVAR is temporarily disabled"
       in
         newTy
       end
