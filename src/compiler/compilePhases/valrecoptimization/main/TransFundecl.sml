@@ -161,6 +161,13 @@ in
       | ICDYNAMICTOP (ty, loc) => icexp
       | ICDYNAMICVIEW (icexp, ty, loc) => ICDYNAMICVIEW (transExp icexp, ty, loc)
       | ICREIFYTY (ty, loc) => icexp
+      | ICHASH (icexp1, loc) => 
+        ICHASH (transExp icexp1, loc)
+      | ICHASHDEFAULT (loc) => icexp
+      | ICHASHFIND (icexp1, icexp2, loc) => 
+        ICHASHFIND (transExp icexp1, transExp icexp2, loc)
+      | ICHASHADD (icexp1, icexp2, icexp3, loc) =>
+        ICHASHADD (transExp icexp1, transExp icexp2, transExp icexp3, loc)
   and transFFIFun ffiFun =
       case ffiFun of
         ICFFIFUN exp => ICFFIFUN (transExp exp)

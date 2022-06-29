@@ -186,6 +186,9 @@ structure S = AbsynSQL
     | WITH
     | WITHTYPE
     | WORD of {radix:StringCvt.radix, digits:string}
+    | LHASHBRACE
+    | LARROW
+    | HASHCHAIN
 
 %nonterm
       id of Symbol.symbol
@@ -435,7 +438,9 @@ structure S = AbsynSQL
 %right ARROW
 %right AND
 %right DARROW
+%right LARROW
 %nonassoc BAR
+%left HASHCHAIN
 %left DO
 %left HASH
 %left ELSE
@@ -743,6 +748,10 @@ atexp_noVAR
                  iterate = exp2,
                  pred = exp3},
               (FOREACHleft, ENDright)))
+        | LHASHBRACE RBRACE
+          (A.EXPHASHDEFAULT (LHASHBRACEleft, RBRACEright))
+        | LHASHBRACE BAR exp RBRACE
+          (A.EXPHASH (exp1, (LHASHBRACEleft, RBRACEright)))
 
 atexp
         : atexp_noVAR
@@ -846,6 +855,10 @@ exp
           (A.EXPDYNAMICTOP (ty, (DYNAMICTOPleft, tyright)))
         | DYNAMICCASE exp OF dynmatch
           (A.EXPDYNAMICCASE (exp, dynmatch, (DYNAMICCASEleft, dynmatchright)))
+        | exp HASHCHAIN exp RBRACKET
+          (A.EXPHASHFIND (exp1, exp2, (exp1left, RBRACKETright)))
+        | exp HASHCHAIN exp RBRACKET LARROW exp
+          (A.EXPHASHADD (exp1, exp2, exp3, (exp1left, exp3right)))
 
 expOrSQL
         : exp

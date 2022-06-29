@@ -179,7 +179,7 @@ struct
        *)
       (*%
        * @prefix formatWithType_
-       * @format({const, loc}) const
+       * @format({const, loc}) "BCCONSTANT " const
        *)
       BCCONSTANT of {const : rcconst, loc : loc}
     | (*%
@@ -187,7 +187,7 @@ struct
        *)
       (*%
        * @prefix formatWithType_
-       * @format({string, loc}) string
+       * @format({string, loc}) "BCSTRING " string
        *)
       BCSTRING of {string : tlstring, loc : loc}
     | (*%
@@ -195,7 +195,7 @@ struct
        *)
       (*%
        * @prefix formatWithType_
-       * @format({varInfo, loc}) varInfo
+       * @format({varInfo, loc}) "BCVAR " varInfo
        *)
       BCVAR of {varInfo : varInfo, loc : loc}
     | (*%
@@ -203,7 +203,7 @@ struct
        *)
       (*%
        * @prefix formatWithType_
-       * @format({exVarInfo, loc}) exVarInfo
+       * @format({exVarInfo, loc}) "BCEXVAR " exVarInfo
        *)
       BCEXVAR of {exVarInfo : exVarInfo, loc : loc}
     | (*%
@@ -248,7 +248,7 @@ struct
       (*%
        * @prefix formatWithType_
        * @format({funExp, argExpList: arg args, funTy, loc})
-       * L8{ 2[
+       * L8{ "BCAPPM " 2[
        *   L2{ funExp +1 ":" +d funTy }
        *   +1 args:appList(arg)("(",",",")")
        * ] }
@@ -268,7 +268,7 @@ struct
       (*%
        * @prefix formatWithType_
        * @format({localDecl, mainExp, loc})
-       * R1{ "let" 2[ +1 localDecl ]
+       * R1{ "BCLET let" 2[ +1 localDecl ]
        *     +1 "in" +1 mainExp }
        *)
       BCLET of
@@ -297,7 +297,7 @@ struct
        * @format({fieldList: field fields,
        *          recordTy, isMutable, clearPad, allocSizeExp,
        *          bitmaps: bm bms, loc})
-       * L2{ L2{ fields:enclosedList(field)("{",",","}")
+       * L2{ L2{ "BCRECORD " fields:enclosedList(field)("{",",","}")
        *         +1 "/t" +d allocSizeExp
        *         +1 "/" +d bms:appList(bm)("(",",",")") }
        *     +1 ":" +d recordTy }
@@ -339,7 +339,7 @@ struct
        * @format({recordExp, indexExp, label, recordTy, resultTy, resultSize,
        *          resultTag, loc})
        * L2{
-       *   L8{ 2[ L2{ "#" label +1 "/i" +d indexExp
+       *   L8{ 2[ L2{ "BCSELECT #" label +1 "/i" +d indexExp
        *                        +1 "/r" +d resultTag }
        *          +1 L2{ recordExp +1 ":" +d recordTy } ] }
        *   +1 ":" +d resultTy
@@ -370,7 +370,7 @@ struct
        * @prefix formatWithType_
        * @format({recordExp, recordTy, indexExp, label, valueExp, valueTy,
        *          valueTag, valueSize, loc})
-       * L8{ 2[ L2{ recordExp +1 ":" +d recordTy }
+       * L8{ 2[ L2{ "BCMODIFY " recordExp +1 ":" +d recordTy }
        *        +1 "#" +d "{"
        *          !N0{ L2{ "#" label +1 "/" +d indexExp } +d "="
        *               2[ +1 L2{ valueExp
@@ -397,7 +397,7 @@ struct
       (*%
        * @prefix formatWithType_
        * @format({argExp, resultTy, loc})
-       * L2{ R1{ 2[ "raise" +1 argExp ] +1 } ":" +d resultTy }
+       * L2{ R1{ 2[ "BCRAISE raise" +1 argExp ] +1 } ":" +d resultTy }
        *)
       BCRAISE of
       {
@@ -417,7 +417,7 @@ struct
        * @prefix formatWithType_
        * @format({tryExp, exnVar, handlerExp, resultTy, loc})
        * L2{
-       * R1{ "try"
+       * R1{ "BCHANDLE try"
        *     2[ +1 tryExp ]
        *     +1 "handle" +d { exnVar +1 "=>" }
        *     2[ +1 handlerExp ]
@@ -449,7 +449,7 @@ struct
        * L2{
        *   R0{ tryExp
        *     +1 
-       *     !R0{ "_catch" +d
+       *     !R0{ "BCCATCH _catch" +d
        *          L8{ catchLabel
        *              +1 1[ args:appList(arg)("{",",","}") ] }
        *          +d "=>" 1[ +1 catchExp ] } }
@@ -474,7 +474,7 @@ struct
       (*% @prefix formatWithType_
        * @format({catchLabel, argExpList: arg args, resultTy, loc})
        * L2{
-       *   R0{ "_throw"
+       *   R0{ "BCTHROW _throw"
        *     1[ +1 L8{ catchLabel
        *               +1 1[ args:appList(arg)("{",",","}") ] } ] }
        *   +1 ":" +d resultTy }
@@ -495,7 +495,7 @@ struct
       (*%
        * @prefix formatWithType_
        * @format({argVarList: arg args, retTy, bodyExp, loc})
-       * L2{ R1{ "fn" +d args:appList(arg)("(",",",")") +d "=>"
+       * L2{ R1{ "BCFNM fn" +d args:appList(arg)("(",",",")") +d "=>"
        *        3[ +1 bodyExp ] }
        *     +1 ":" +d retTy }
        *)
@@ -513,7 +513,7 @@ struct
       (*%
        * @prefix formatWithType_
        * @format({btvEnv:btv, expTyWithoutTAbs, exp, loc})
-       * "[" !R1{ btv "." +1 L2{ exp +1 ":" +d expTyWithoutTAbs } } "]"
+       * "BCPOLY [" !R1{ btv "." +1 L2{ exp +1 ":" +d expTyWithoutTAbs } } "]"
        *)
       BCPOLY of
       {
@@ -530,7 +530,7 @@ struct
       (*%
        * @prefix formatWithType_
        * @format({exp, expTy, instTyList: ty tys, loc})
-       * L8{ 2[ L2{ exp +1 ":" +d expTy }
+       * L8{ "BCTAPP " 2[ L2{ exp +1 ":" +d expTy }
        *        +1 tys:enclosedList(ty)("(",",",")") ] }
        *)
       BCTAPP of
@@ -554,7 +554,7 @@ struct
        * @format({switchExp, expTy, branches: branch branches, defaultExp,
        *          resultTy, loc})
        * L2{
-       * { 2[ "case" +1 L2{ switchExp +1 ":" +d expTy } +1 "of" ] }
+       * { 2[ "BCSWITCH case" +1 L2{ switchExp +1 ":" +d expTy } +1 "of" ] }
        * branches:caseList(branch)(2[+1], +1 "|" +d,
        *                           !R1{ 2[ "_" +d "=>" +1 defaultExp ] })
        * +1 ":" +d resultTy }
@@ -577,7 +577,7 @@ struct
       (*%
        * @prefix formatWithType_
        * @format({exp, expTy, targetTy, cast, loc})
-       * cast "(" !L2{ L2{ exp +1 ":" +d expTy } +1 ":" +d targetTy} ")"
+       * "BCCAST " cast "(" !L2{ L2{ exp +1 ":" +d expTy } +1 ":" +d targetTy} ")"
        *)
       BCCAST of
       {
@@ -597,7 +597,7 @@ struct
       (*%
        * @prefix formatWithType_
        * @format({boundVar, boundExp, loc})
-       * !R1{ "val" +d boundVar +d "="
+       * "BCVAL " !R1{ "val" +d boundVar +d "="
        *      4[ +1 boundExp ] }
        *)
       BCVAL of
@@ -615,7 +615,7 @@ struct
       (*%
        * @prefix formatWithType_
        * @format({recbindList: bind binds, loc})
-       * !R1{ binds:decList(bind)("val" +d "rec" +d, +1 "and" +d) }
+       * "BCVALREC " !R1{ binds:decList(bind)("val" +d "rec" +d, +1 "and" +d) }
        * @format:bind({boundVar, boundExp})
        * boundVar +d "=" 4[ +1 boundExp ]
        *)
@@ -631,7 +631,7 @@ struct
       (*%
        * @prefix formatWithType_
        * @format({exVarInfo, provider, loc})
-       * !R1{ "extern" +d "val" +d exVarInfo }
+       * "BCEXTERNVAR " !R1{ "extern" +d "val" +d exVarInfo }
        *)
       BCEXTERNVAR of
       {
@@ -647,7 +647,7 @@ struct
       (*%
        * @prefix formatWithType_
        * @format({weak, exVarInfo, exp, loc})
-       * !R1{ "export" +d "val" +d exVarInfo
+       * "BCEXPORTVAR " !R1{ "export" +d "val" +d exVarInfo
        *      2[ +d "=" +1 exp ] }
        *)
       BCEXPORTVAR of

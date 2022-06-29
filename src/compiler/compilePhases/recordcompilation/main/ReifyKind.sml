@@ -44,6 +44,7 @@ struct
   fun generateInstance {btvEnv, lookup} ty loc =
       let
         fun lookUp btv = lookup (T.REIFYty (T.BOUNDVARty btv))
+        (* ここで戻っているあたりがポイント *)
         val tyRep = TyToReifiedTy.toTy loc ty
         val tyRepExp = ReifyTy.TyRepWithLookUp lookUp loc tyRep
         val retExp = DatatypeCompilation.compileExp

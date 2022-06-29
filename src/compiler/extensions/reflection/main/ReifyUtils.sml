@@ -26,7 +26,7 @@ struct
   exception TypeMismatch
 
   fun eqTy arg = Unify.eqTy BoundTypeVarID.Map.empty arg
-  fun printTy ty = Bug.printError (Bug.prettyPrint (T.format_ty ty))
+  fun printTy ty = Bug.printError (Bug.prettyPrint (T.format_ty ty) ^ "\n")
   fun printTpexp tpexp = Bug.printError (Bug.prettyPrint (TC.format_tpexp tpexp) ^ "\n")
 
   fun --> (argTy, retTy) = T.FUNMty ([argTy], retTy)

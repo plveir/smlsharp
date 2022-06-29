@@ -398,6 +398,27 @@ struct
        * R0{ "_reifyTy" 1 "(" !N0{ ty ")" } }
        *)
     PLREIFYTY of ty * loc
+    (* FIXME *)
+    | (*%
+       * @format(plexp * loc)
+       * R0{ "HASH" }
+       *)
+    PLHASH of plexp * loc
+    | (*%
+       * @format(loc)
+       * R0{ "HASHDEFAULT" }
+       *)
+    PLHASHDEFAULT of loc
+    | (*%
+       * @format(plexp * plexp2 * loc)
+       * R0{ "HASHFIND" }
+       *)
+    PLHASHFIND of plexp * plexp * loc
+    | (*%
+       * @format(plexp * plexp2 * plexp3 * loc)
+       * R0{ "HASHADD" }
+       *)
+    PLHASHADD of plexp * plexp * plexp * loc
 
   and ffiFun =
       (*% @format(x) x *)
@@ -719,6 +740,10 @@ struct
       | PLDYNAMICVIEW (_,_,loc) => loc
       | PLDYNAMICCASE (_,_,loc) => loc
       | PLREIFYTY (_,loc) => loc
+      | PLHASH (_, loc) => loc
+      | PLHASHDEFAULT (loc) => loc
+      | PLHASHFIND (_, _, loc) => loc
+      | PLHASHADD (_, _, _, loc) => loc
   fun getLeftPosExp plexp = #1 (getLocExp plexp)
   fun getRightPosExp plexp = #2 (getLocExp plexp)
 

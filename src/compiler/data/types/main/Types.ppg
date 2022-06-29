@@ -447,7 +447,7 @@ struct
    *)
   datatype ty =
       (*%
-       * @format(sty) sty
+       * @format(sty) "SINGLETONty " sty
        *)
       (*%
        * @prefix print_
@@ -456,7 +456,7 @@ struct
       (* a singleton type for type-directed compilation *)
       SINGLETONty of singletonTy
     | (*%
-       * @format(bty) bty
+       * @format(bty) "BACKENDty " bty
        *)
       (*%
        * @prefix print_
@@ -473,7 +473,7 @@ struct
        *)
       ERRORty
     | (*%
-       * @format(id * kind) id kind
+       * @format(id * kind) "DUMMYty " id kind
        *)
       (*%
        * @prefix print_
@@ -489,7 +489,7 @@ struct
        *)
       EXISTty of ExistTyID.id * kind
     | (*%
-       * @format(tv tvRef) tvRef(tv)
+       * @format(tv tvRef) "TYVARty " tvRef(tv)
        *)
       (*%
        * @prefix print_
@@ -497,7 +497,7 @@ struct
        *)
       TYVARty of tvState ref
     | (*%
-       * @format(bid) bid
+       * @format(bid) "BOUNDVARty " bid
        *)
       (*%
        * @prefix print_
@@ -506,7 +506,7 @@ struct
       BOUNDVARty of boundTypeVarID
     | (*%
        * @format(argTy argTys * retTy)
-       * R4{
+       * "FUNMty " R4{
        *   argTys:ifsingle()(
        *     argTys(argTy)(),
        *     "{" !N0{ argTys(argTy)("," +1) } "}"
@@ -528,7 +528,7 @@ struct
       FUNMty of ty list * ty
     | (*%
        * @format(ty tys)
-       * tys:helper_record(ty)
+       * "RECORDty " tys:helper_record(ty)
        *)
       (*%
        * @prefix print_
@@ -538,7 +538,7 @@ struct
       RECORDty of ty RecordLabel.Map.map
     | (*%
        * @format({tyCon, args: argTy argTys})
-       * L8{
+       * "CONSTRUCTty " L8{
        *   argTys:ifcons2()("(",)
        *   argTys:N0ifcons2()(argTys(argTy)("," +1))
        *   argTys:ifcons2()(")",)
@@ -563,7 +563,7 @@ struct
       }
     | (*%
        * @format({boundtvars: kind kinds, constraints:con cons, body})
-       * "[" !N0{
+       * "POLYty [" !N0{
        *   { kinds:helper_format_boundTvars(kind) } "." +1
        *   cons:ifcons()("(" !N0{ cons(con)("," +1) } ")" +d "=>" +1,)
        *   body

@@ -390,14 +390,14 @@ structure TypedCalc = struct
         @format(var) var
        *)
       (*% @prefix formatWithType_
-        @format(var) var:format_varInfo
+        @format(var) "TPVAR " var:format_varInfo
        *)
       TPVAR of varInfo
     | (*%
         @format(var * loc) var
        *)
       (*% @prefix formatWithType_
-        @format(var * loc) var:format_exVarInfo
+        @format(var * loc) "TPEXVAR " var:format_exVarInfo
        *)
       (* extnernal variable imported through _require *)
       TPEXVAR of (exVarInfo * loc)
@@ -436,7 +436,7 @@ structure TypedCalc = struct
     | (*%
         @format({funExp, funTy, argExpList:arg args, loc})
         L8{
-          funExp
+          "TPAPPM " funExp
           2[
             +1
             args:ifsingle()(,"{")
@@ -897,7 +897,7 @@ structure TypedCalc = struct
        *)
       (*% @prefix formatWithType_
         @format({exp, expTy, instTyList:ty tys, loc})
-        L8{ exp 2[ +1 "{" !N0{ tys(ty)("," +1) } "}" ] }
+        "TPTAPP " L8{ exp 2[ +1 "{" !N0{ tys(ty)("," +1) } "}" ] }
        *)
       (* TPTAPP(ex,ty1,tyl) : ty1 is the polytype, tyl are type args *)
       TPTAPP of

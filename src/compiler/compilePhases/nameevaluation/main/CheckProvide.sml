@@ -52,6 +52,7 @@ local
             | I.TYFUNM (tyList, ty) => app traverseTy (ty::tyList)
             | I.TYPOLY (tvarlist, ty) => traverseTy ty
             | I.INFERREDTY typesTy => ()
+
       in
         (traverseTy ty; false) handle OPAQUE => true
       end

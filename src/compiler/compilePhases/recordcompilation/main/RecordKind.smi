@@ -7,6 +7,7 @@ _require "../../../data/symbols/main/RecordLabel.smi"
 _require local "../../../data/builtin/main/BuiltinTypes.smi"
 _require "../../../compilerIRs/typedlambda/main/TypedLambda.ppg.smi"
 _require "./KIND_INSTANCE.sig"
+_require "../../../extensions/userlevelprimitive/main/UserLevelPrimitive.smi"
 
 structure RecordKind =
 struct

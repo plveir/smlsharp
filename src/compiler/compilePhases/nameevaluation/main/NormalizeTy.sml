@@ -517,6 +517,7 @@ to re-structure builtins.
             | I.TYFUNM (tyList,ty2) => false
             | I.TYPOLY (kindedTvarList, ty) => raise bug "POLYty"
             | I.INFERREDTY ty => raise bug "INFERREDTY"
+            
         and eqFields fields =
             let exception FALSE in
               (RecordLabel.Map.app

@@ -67,6 +67,10 @@ struct
     | PLDYNAMICVIEW of plexp * ty * loc
     | PLDYNAMICCASE of plexp * (scopedTvars * plpat * plexp * loc) list * loc
     | PLREIFYTY of ty * loc
+    | PLHASH of plexp * loc
+    | PLHASHDEFAULT of loc
+    | PLHASHFIND of plexp * plexp * loc
+    | PLHASHADD of plexp * plexp * plexp * loc
 
   and ffiFun
     = PLFFIFUN of plexp

@@ -190,5 +190,9 @@ val ALPHABETICID: (string) *  pos * pos -> token
 val ALL:  pos * pos -> token
 val ABSTYPE:  pos * pos -> token
 val EOF:  pos * pos -> token
+
+val LHASHBRACE:  pos * pos -> token
+val LARROW: pos * pos -> token
+val HASHCHAIN: pos * pos -> token
   end
 end

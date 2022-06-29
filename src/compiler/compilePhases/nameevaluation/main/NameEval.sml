@@ -1096,6 +1096,12 @@ local
           I.ICJOIN(bool, evalExp plexp1, evalExp plexp2, loc)
         | P.PLREIFYTY (ty, loc) => 
           I.ICREIFYTY (evalTy' ty, loc)
+        | P.PLHASH (exp, loc) => I.ICHASH (evalExp exp, loc)
+        | P.PLHASHDEFAULT (loc) => I.ICHASHDEFAULT (loc)
+        | P.PLHASHFIND (plexp1, plexp2, loc) =>
+          I.ICHASHFIND (evalExp plexp1, evalExp plexp2, loc)
+        | P.PLHASHADD (plexp1, plexp2, plexp3, loc) =>
+          I.ICHASHADD (evalExp plexp1, evalExp plexp2, evalExp plexp3, loc)
       end
 
   and evalFfiFun tvarEnv env ffiFun =

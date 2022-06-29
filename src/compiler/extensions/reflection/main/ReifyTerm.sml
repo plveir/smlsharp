@@ -483,7 +483,7 @@ struct
           | RTy.PTRty _ => R.PTR (getWord64 obj)
           | (ty as RTy.FUNMty _) => R.FUN {closure=(#1 (deref obj)), ty=ty}
           | RTy.TYVARty => R.UNPRINTABLE
-          | RTy.ERRORty => R.UNPRINTABLE
+          | RTy.ERRORty => raise Fail "errror"
           | RTy.DUMMYty _ => R.UNPRINTABLE
           | RTy.EXISTty _ => R.UNPRINTABLE
           | RTy.REAL32ty  => R.REAL32 (getReal32 obj)

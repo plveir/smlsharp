@@ -873,6 +873,10 @@ struct
                matches,
            loc)
       | A.EXPREIFYTY (ty, loc) => PC.PLREIFYTY (ty, loc)
+      | A.EXPHASH (exp1, loc) => PC.PLHASH (elabExp env exp1, loc)
+      | A.EXPHASHDEFAULT (loc) => PC.PLHASHDEFAULT (loc)
+      | A.EXPHASHFIND (exp1, exp2, loc) => PC.PLHASHFIND (elabExp env exp1, elabExp env exp2, loc)
+      | A.EXPHASHADD (exp1, exp2, exp3, loc) => PC.PLHASHADD (elabExp env exp1, elabExp env exp2, elabExp env exp3, loc)
 
   and elabFFIFun env ffiFun =
       case ffiFun of

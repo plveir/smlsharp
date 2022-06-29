@@ -17,6 +17,7 @@ struct
   structure RC = RecordCalc
   structure T = Types
   structure TB = TypesBasics
+  structure UP = UserLevelPrimitive
 
   fun newVar ty =
       {path = [],
@@ -147,7 +148,7 @@ struct
       | T.CONSTRUCTty {tyCon, args} =>
         T.CONSTRUCTty {tyCon = tyCon, args = map compileTy args}
       | T.POLYty {boundtvars, constraints, body} =>
-        case generateExtraArgs boundtvars of
+        (case generateExtraArgs boundtvars of
           nil =>
           T.POLYty {boundtvars = boundtvars,
                     constraints = constraints,
@@ -155,7 +156,7 @@ struct
         | extraTys =>
           T.POLYty {boundtvars = boundtvars,
                     constraints = constraints, 
-                    body = T.FUNMty (extraTys, compileTy body)}
+                    body = T.FUNMty (extraTys, compileTy body)})
 
   fun compileVarInfo ({path, ty, id} : TL.varInfo) =
       {path = path, ty = compileTy ty, id = id} : RC.varInfo
@@ -168,6 +169,7 @@ struct
       let
         val env = {btvEnv = btvEnv,
                    lookup = fn sty => SingletonTyMap.find (instanceEnv, sty)}
+        (* val _ = print (Bug.prettyPrint (T.format_singletonTy sty)) *)
       in
         case sty of
           T.TAGty arg =>
@@ -235,7 +237,8 @@ struct
       | _ => raise Bug.Bug "generateTag"
 
   and compileExp context tpexp =
-      case tpexp of
+      (* (print ("compiling RCEXP:" ^ (Bug.prettyPrint (TL.formatWithType_tlexp tpexp)) ^ "\n"); *)
+      (case tpexp of
         TL.TLFOREIGNAPPLY {funExp, attributes, resultTy, argExpList, loc} =>
         RC.RCFOREIGNAPPLY
           {funExp = compileExp context funExp,
@@ -292,13 +295,29 @@ struct
       | TL.TLVAR (varInfo, loc) =>
         RC.RCVALUE (RC.RCVAR (compileVarInfo varInfo), loc)
       | TL.TLEXVAR (exVarInfo as {path, ty}, loc) =>
-        RC.RCEXVAR (compileExVarInfo exVarInfo, loc)
+        (* (print (
+          "\nRCEXVAR\n" ^
+          (Bug.prettyPrint (TL.formatWithType_tlexp tpexp)) ^
+          " : " ^
+          (Bug.prettyPrint (T.format_ty (#ty (compileExVarInfo exVarInfo)))) ^ 
+          "\n"
+        ); *)
+        (RC.RCEXVAR (compileExVarInfo exVarInfo, loc))
       | TL.TLAPPM {funExp, funTy, argExpList, loc} =>
-        RC.RCAPPM
-          {funExp = compileExp context funExp,
-           funTy = compileTy funTy,
-           argExpList = map (compileExp context) argExpList,
-           loc = loc}
+        let
+          val exp = RC.RCAPPM
+            {funExp = compileExp context funExp,
+            funTy = compileTy funTy,
+            argExpList = map (compileExp context) argExpList,
+            loc = loc}
+          (* val _ = (print (
+            "\nRC.RCAPPM\n" ^
+            (Bug.prettyPrint (RC.formatWithType_rcexp exp)) ^
+            "\n"
+          )) *)
+        in
+          exp
+        end
       | TL.TLLET {decl, body, loc} =>
         foldr
           (fn (decl, exp) => RC.RCLET {decl = decl, body = exp, loc = loc})
@@ -322,20 +341,74 @@ struct
            loc = loc}
       | TL.TLSELECT {label, recordExp, recordTy, resultTy, loc} =>
         let
-          val resultTy = compileTy resultTy
+          val _ = print "TL.TLSELECT compiling... \n"
+          val indexExp = toExp context (generateInstance context (T.INDEXty (label, recordTy)) loc)
+          val indexRecastedExp = RC.RCCAST {
+            exp = indexExp,
+            expTy = T.SINGLETONty (T.INDEXty (label, recordTy)),
+            targetTy = BuiltinTypes.word32Ty,
+            cast = TL.TypeCast,
+            loc = loc
+          }
+          val selectExp = RC.RCSELECT {
+            indexExp = indexExp,
+            label = label,
+            recordExp = compileExp context recordExp,
+            recordTy = compileTy recordTy,
+            resultTy = compileTy resultTy,
+            resultSize = generateSize context loc resultTy,
+            resultTag = generateTag context loc resultTy,
+            loc = loc}
+          (* findTy preprocessing *)
+          val findTy = #ty (UP.HASH_exInfo_find loc)
+          (* val instTyList = [resultTy] *)
+          val instTyList = [recordTy, resultTy]
+          val tpappedFindTy = TypesBasics.tpappTy (findTy, instTyList)
+          val keyToRetTy = case tpappedFindTy of
+            T.FUNMty (_, ranty) => ranty
+          | _ => raise Bug.Bug "findFun does not have expected ty"
+          (* findExp preprocessing *)
+          val findExp = (TL.TLEXVAR ((UP.HASH_exInfo_find loc), loc))
+            val _ = print (Bug.prettyPrint (TL.formatWithType_tlexp findExp))
+            val _ = print " : "
+            val _ = print (Bug.prettyPrint (T.format_ty findTy))
+          (* locがずれそう *)
+          (* val hashExp = TL.TLCAST {
+            exp = recordExp,
+            expTy = recordTy,
+            targetTy = T.CONSTRUCTty {tyCon=(UP.HASH_tyCon_hashtbl loc), args=[]},
+            cast = TL.TypeCast,
+            loc = loc
+          } *)
+          val findTlexp = TL.TLAPPM {
+            funExp = TL.TLAPPM {
+              funExp = TL.TLTAPP {
+                exp = findExp,
+                expTy = findTy,
+                instTyList = instTyList,
+                loc=loc
+              },
+              funTy = tpappedFindTy,
+              argExpList = [recordExp],
+              loc = loc
+            },
+            funTy = keyToRetTy,
+            argExpList = [TL.TLSTRING (TL.STRING (RecordLabel.toString label), loc)],
+            loc = loc
+          }
+          val findRcexp = compileExp context findTlexp
+          val _ = print "\nRCDEBUG_findRcexp\n"
+          (* val _ = print (Bug.prettyPrint (RC.formatWithType_rcexp findRcexp)) *)
+          val switchExp = RC.RCSWITCH {
+            exp = indexRecastedExp,
+            expTy = BuiltinTypes.word32Ty,
+            branches = [{const=(RC.WORD32 (Word32.fromInt ~1)), body=findRcexp}],
+            defaultExp = selectExp,
+            resultTy = resultTy,
+            loc = loc
+          }
         in
-          RC.RCSELECT
-            {indexExp =
-               toExp
-                 context
-                 (generateInstance context (T.INDEXty (label, recordTy)) loc),
-             label = label,
-             recordExp = compileExp context recordExp,
-             recordTy = compileTy recordTy,
-             resultTy = resultTy,
-             resultSize = generateSize context loc resultTy,
-             resultTag = generateTag context loc resultTy,
-             loc = loc}
+          switchExp
         end
       | TL.TLMODIFY {label, recordExp, recordTy, elementExp, elementTy, loc} =>
         let
@@ -492,6 +565,10 @@ struct
         end
       | TL.TLTAPP {exp, expTy, instTyList, loc} =>
         let
+          (* val _ = print ("\nTLTAPP \n" ^
+            (Bug.prettyPrint (TL.formatWithType_tlexp tpexp)) ^
+            "\n"
+          ) *)
           val newExp = compileExp context exp
           val newExpTy = compileTy expTy
           val newInstTyList = instTyList (* contains no POLYty *)
@@ -552,10 +629,11 @@ struct
                      funTy = funTy,
                      argExpList = map (compileExp context) extraArgs,
                      loc = loc}
-        end
+        end)
 
   and compileDecl context tldecl =
-      case tldecl of
+      (* (print ("compileDecl: " ^ (Bug.prettyPrint (TL.formatWithType_tldecl tldecl)) ^ "\n"); *)
+      (case tldecl of
         TL.TLEXPORTVAR {weak, var, exp} =>
         [RC.RCEXPORTVAR {weak = weak,
                          var = compileExVarInfo var,
@@ -677,7 +755,7 @@ struct
                 recbindMap
         in
           List.concat (map (compileDecl context) (dec :: decs))
-        end
+        end)
 
   fun makeUerlelvelPrimitiveExternDecls externList =
       let

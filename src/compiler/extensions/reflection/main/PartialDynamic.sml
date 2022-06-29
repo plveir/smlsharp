@@ -247,12 +247,21 @@ struct
                (groupListTerm : (ReifiedTy.tyRep * (existInstMap -> 'a RTm.dyn -> 'b)) list)
     =
       let
+          val _ = print "pre-selectCase: "
+          val _ = print (Int.toString (List.length groupListTerm))
+          val _ = print "\n"
         val reifiedTerm = RTm.toReifiedTerm dynamic
         val reifiedTy = inferTy reifiedTerm
         fun selectCase nil = raise RuntimeTypeError
           | selectCase ((tyRep, caseFn)::rest) = 
             let
-              val {reifiedTy=coerceTy, conSetEnv} = ReifiedTy.getConstructTy tyRep
+              val {reifiedTy=coerceTy, conSetEnv} = RTy.getConstructTy tyRep
+                val _ = print (Bug.prettyPrint (RTm.toJSON_reifiedTerm reifiedTerm))
+                val _ = print ": "
+                val _ = print (Bug.prettyPrint (RTy.format_reifiedTy reifiedTy))
+                val _ = print " == "
+                val _ = print (Bug.prettyPrint (RTy.format_reifiedTy coerceTy))
+                val _ = print "\n"
             in
 (*
               if matchTy (reifiedTy, coerceTy) then caseFn

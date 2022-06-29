@@ -233,6 +233,12 @@ struct
                tyvarsList (tyvarsDynMatch btvEnv) rules)
       | P.PLREIFYTY (ty, loc) =>
         tyvarsTy btvEnv ty
+      | P.PLHASH (exp, loc) => tyvarsExp btvEnv exp
+      | P.PLHASHDEFAULT (loc) => empty
+      | P.PLHASHFIND (exp1, exp2, loc) =>
+        union (tyvarsExp btvEnv exp1, tyvarsExp btvEnv exp2)
+      | P.PLHASHADD (exp1, exp2, exp3, loc) =>
+        union (tyvarsExp btvEnv exp1, union (tyvarsExp btvEnv exp2, tyvarsExp btvEnv exp3))
 
   and tyvarsFFIFun btvEnv ffiFun =
       case ffiFun of
@@ -367,6 +373,10 @@ struct
       | P.PLJOIN (bool, exp1, exp2, loc) =>
         P.PLJOIN (bool, decideExp btvEnv exp1, decideExp btvEnv exp2, loc)
       | P.PLREIFYTY (ty, loc) => P.PLREIFYTY (ty, loc)
+      | P.PLHASH (exp1, loc) => P.PLHASH (decideExp btvEnv exp1, loc)
+      | P.PLHASHDEFAULT (loc) => exp
+      | P.PLHASHFIND (exp1, exp2, loc) => P.PLHASHFIND (decideExp btvEnv exp1, decideExp btvEnv exp2, loc) 
+      | P.PLHASHADD (exp1, exp2, exp3, loc) => P.PLHASHADD (decideExp btvEnv exp1, decideExp btvEnv exp2, decideExp btvEnv exp3, loc) 
 
   and decideFFIFun btvEnv ffiFun =
       case ffiFun of

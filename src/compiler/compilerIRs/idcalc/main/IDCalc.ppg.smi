@@ -170,6 +170,10 @@ struct
     | ICDYNAMICTOP of ty * loc
     | ICDYNAMICVIEW of icexp * ty * loc
     | ICREIFYTY of ty * loc
+    | ICHASH of icexp * loc
+    | ICHASHDEFAULT of loc
+    | ICHASHFIND of icexp * icexp * loc
+    | ICHASHADD of icexp * icexp * icexp * loc
     
   and ffiFun
     = ICFFIFUN of icexp

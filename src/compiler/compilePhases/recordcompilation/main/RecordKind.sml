@@ -8,6 +8,7 @@ struct
   structure TL = TypedLambda
   structure D = DynamicKind
   structure T = Types
+  structure UP = UserLevelPrimitive
 
   type singleton_ty_body = RecordLabel.label * Types.ty
   type kind = DynamicKind.record * Types.ty RecordLabel.Map.map
@@ -54,6 +55,10 @@ struct
         SOME (TL.TLINDEXOF {label = label, recordTy = ty, loc = loc})
       | ty as T.DUMMYty (id, T.KIND {tvarKind = T.REC _, ...}) =>
         SOME (TL.TLINDEXOF {label = label, recordTy = ty, loc = loc})
+      | ty as T.CONSTRUCTty {tyCon=tyCon,...} => 
+        if (TypID.eq (#id tyCon, #id (UP.HASH_tyCon_hashtbl loc)))
+        then SOME (TL.TLINT (TL.WORD32 (Word32.fromInt ~1), loc))
+        else NONE
       | _ => NONE
 
 end

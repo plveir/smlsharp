@@ -1303,7 +1303,7 @@ in
     | (*%
          @format(funExp * argExp list * loc)
            1[
-             "(" funExp
+             "ICAPPM (" funExp
                  +d
                  list:seqList(argExp)("{", ",", "}")
              ")"
@@ -1702,6 +1702,23 @@ in
       (*% @prefix formatWithType_ @format *)
       (*% @prefix print_ @format *)
       ICREIFYTY of ty * loc
+    (* FIXME *)
+    | (*% *)
+      (*% @prefix formatWithType_ @format *)
+      (*% @prefix print_ @format *)
+      ICHASH of icexp * loc
+    | (*% *)
+      (*% @prefix formatWithType_ @format *)
+      (*% @prefix print_ @format *)
+      ICHASHDEFAULT of loc
+    | (*% *)
+      (*% @prefix formatWithType_ @format *)
+      (*% @prefix print_ @format *)
+      ICHASHFIND of icexp * icexp * loc
+    | (*% *)
+      (*% @prefix formatWithType_ @format *)
+      (*% @prefix print_ @format *)
+      ICHASHADD of icexp * icexp * icexp * loc
 
   and ffiFun
     = (*% @format(x) x *)
@@ -2648,6 +2665,10 @@ in
     | ICSQLSCHEMA {loc,...} => loc
     | ICJOIN (bool, icexp1, icexp2, loc) => loc
     | ICREIFYTY (ty, loc) => loc
+    | ICHASH (_, loc) => loc
+    | ICHASHDEFAULT (loc) => loc
+    | ICHASHFIND (_, _, loc) => loc
+    | ICHASHADD (_, _, _, loc) => loc
     
   fun getLeftLocExp icexp = #1 (getLocExp icexp)
   fun getRightLocExp icexp = #2 (getLocExp icexp)

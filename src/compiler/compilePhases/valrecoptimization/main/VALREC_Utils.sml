@@ -129,6 +129,12 @@ in
       | ICDYNAMICTOP (ty, loc) => VarID.Set.empty
       | ICDYNAMICVIEW (exp, ty, loc) => getFreeIdsInExp exp
       | ICREIFYTY (ty, loc) => VarID.Set.empty
+      | ICHASH (exp1, loc) => getFreeIdsInExp exp1
+      | ICHASHDEFAULT (loc) => VarID.Set.empty
+      | ICHASHFIND (exp1, exp2, loc) => 
+        VarID.Set.union(getFreeIdsInExp exp1, getFreeIdsInExp exp2)
+      | ICHASHADD (exp1, exp2, exp3, loc) =>
+        VarID.Set.union(getFreeIdsInExp exp1, VarID.Set.union(getFreeIdsInExp exp2, getFreeIdsInExp exp3))
 
   and getFreeIdsInFFIFun ffiFun =
       case ffiFun of

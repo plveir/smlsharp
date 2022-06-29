@@ -284,16 +284,16 @@ struct
   fun staticCall {calleeConv : cconv, callerConv : cconv,
                   codeExp, closureEnvExp, argExpList, loc} =
       let
-(*
+(* 
 val _ = (
 print "==\n";
 print (Bug.prettyPrint (N.format_ncexp codeExp) ^ "\n");
 print "caller:\n";
-app (fn t => print (Bug.prettyPrint (N.format_ty t) ^ ",")) (#argTyList callerConv);
+app (fn t => print (Bug.prettyPrint (N.formatWithType_ty t) ^ ",")) (#argTyList callerConv);
 print "\n";
 print (Bug.prettyPrint (N.format_ty (#retTy callerConv)));
 print "\ncallee:\n";
-app (fn t => print (Bug.prettyPrint (N.format_ty t) ^ ",")) (#argTyList calleeConv);
+app (fn t => print (Bug.prettyPrint (N.formatWithType_ty t) ^ ",")) (#argTyList calleeConv);
 print "\n";
 print (Bug.prettyPrint (N.format_ty (#retTy calleeConv)));
 print "\n==\n"

@@ -99,6 +99,10 @@ struct
     | EXPDYNAMICVIEW of exp * ty * loc
     | EXPDYNAMICCASE of exp * (kindedTvar list * pat * exp * loc) list * loc
     | EXPREIFYTY of ty * loc
+    | EXPHASH of exp * loc
+    | EXPHASHDEFAULT of loc
+    | EXPHASHFIND of exp * exp * loc
+    | EXPHASHADD of exp * exp * exp * loc
 
   and ffiFun
     = FFIFUN of exp

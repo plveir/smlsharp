@@ -5,8 +5,9 @@ _require local "../../../data/symbols/main/Symbol.smi"
 _require local "../../../extensions/debug/main/Bug.smi"
 (* _require local "../../../libs/env/main/SEnv.smi" *)
 
-(*
+
 _require local "../../../extensions/userlevelprimitive/main/UserLevelPrimitive.smi"
+(*
 _require local "../../../data/builtin/main/BuiltinTypes.smi"
 *)
 _require local "./CheckEq.smi"
@@ -21,6 +22,8 @@ _require "./Types.ppg.smi"
 _require local "./DynamicKind.ppg.smi"
 _require local "./DynamicKindUtils.smi"
 _require "./VarInfoEnv.smi"
+
+_require local "../../../data/symbols/main/Loc.smi"
 
 structure Unify =
   struct

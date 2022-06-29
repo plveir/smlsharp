@@ -245,6 +245,14 @@ local
         | IC.ICDYNAMICVIEW (icexp, ty, loc) =>
           IC.ICDYNAMICVIEW (copy icexp, ty, loc)
         | IC.ICREIFYTY (ty, loc) => exp
+        | IC.ICHASH (icexp1, loc) =>
+          IC.ICHASH (copy icexp1, loc)
+        | IC.ICHASHDEFAULT (loc) => 
+          IC.ICHASHDEFAULT (loc)
+        | IC.ICHASHFIND (icexp1, icexp2, loc) =>
+          IC.ICHASHFIND (copy icexp1, copy icexp2, loc)
+        | IC.ICHASHADD (icexp1, icexp2, icexp3, loc) =>
+          IC.ICHASHADD (copy icexp1, copy icexp2, copy icexp3, loc)
       end
   and copyFfiFun varMap ffiFun =
       case ffiFun of

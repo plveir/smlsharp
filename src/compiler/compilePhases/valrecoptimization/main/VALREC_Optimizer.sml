@@ -24,7 +24,7 @@ in
     
   fun optimizeExp icexp =
       case icexp of
-	ICERROR => icexp
+      	ICERROR => icexp
       | ICCONSTANT _ => icexp
       | ICSIZEOF _ => icexp
       | ICVAR _ => icexp
@@ -139,6 +139,13 @@ in
       | ICDYNAMICVIEW (icexp, ty, loc) => 
         ICDYNAMICVIEW (optimizeExp icexp, ty, loc)
       | ICREIFYTY (ty, loc) => icexp
+      | ICHASH (icexp1, loc) =>
+        ICHASH (optimizeExp icexp1, loc)
+      | ICHASHDEFAULT (loc) => icexp
+      | ICHASHFIND (icexp1, icexp2, loc) => 
+        ICHASHFIND (optimizeExp icexp1, optimizeExp icexp2, loc)
+      | ICHASHADD (icexp1, icexp2, icexp3, loc) =>
+        ICHASHADD (optimizeExp icexp1, optimizeExp icexp2, optimizeExp icexp3, loc)
 
   and optimizeFFIFun ffiFun =
       case ffiFun of

@@ -25,21 +25,21 @@ struct
         longsymbolLocString (I.tfunLongsymbol tfun)
 
     val analyzeIdRefOptRef = ref NONE
-        : (Symbol.longsymbol * (Symbol.symbol * IDCalc.idstatus) -> unit) 
-            option ref
+      : (Symbol.longsymbol * (Symbol.symbol * IDCalc.idstatus) -> unit) 
+      option ref
     val analyzeTstrRefOptRef = ref NONE
-        : (Symbol.longsymbol * (Symbol.symbol * NameEvalEnv.tstr) -> unit)
-            option ref
+      : (Symbol.longsymbol * (Symbol.symbol * NameEvalEnv.tstr) -> unit)
+      option ref
 
     val requireEnvOpt = ref NONE : NameEvalEnv.env option ref
  
     val requireEnv = 
-     fn () => case !requireEnvOpt of 
-                   SOME f => f 
-                 | NONE => raise Bug.Bug "requireEnv in UserLevelPrimitive not set"
+      fn () => case !requireEnvOpt of 
+          SOME f => f 
+        | NONE => raise Bug.Bug "requireEnv in UserLevelPrimitive not set"
 
     val stack = ref LongsymbolEnv.empty 
-                : IDCalc.exInfo LongsymbolEnv.map ref
+      : IDCalc.exInfo LongsymbolEnv.map ref
 
     fun insert exInfo = 
         stack := LongsymbolEnv.insert (!stack, #longsymbol exInfo, exInfo)
@@ -64,10 +64,10 @@ struct
           | _ => 
             let
               val decls = 
-                  map (fn {used, longsymbol, version, ty} => 
-                           ({path = longsymbol, ty = E.evalIty E.emptyContext ty}, 
-                            version))
-                      exInfoList
+                map (fn {used, longsymbol, version, ty} => 
+                    ({path = longsymbol, ty = E.evalIty E.emptyContext ty}, 
+                      version))
+                exInfoList
               val _ = initExternalDecls ()
             in
               decls
@@ -75,11 +75,11 @@ struct
         end
 
     fun initAnalyze {analyzeIdRef, analyzeTstrRef} =
-    (
-     analyzeIdRefOptRef := SOME analyzeIdRef;
-     analyzeTstrRefOptRef := SOME analyzeTstrRef;
-     ()
-    )
+        (
+          analyzeIdRefOptRef := SOME analyzeIdRef;
+          analyzeTstrRefOptRef := SOME analyzeTstrRef;
+          ()
+        )
    
     fun analyzeIdRef (longsym, (sym, idstatus)) =
         case !analyzeIdRefOptRef of
@@ -95,33 +95,33 @@ struct
           handle _ => ()
 
     fun init {env = env as {Env,...} : N.topEnv} =
-    (requireEnvOpt := SOME Env;
-     initExternalDecls ();
-     ()
-    )
+        (requireEnvOpt := SOME Env;
+          initExternalDecls ();
+          ()
+        )
 
     fun getTyCon (path:string list) =
-     fn (loc:Loc.loc) => 
-        let
+        fn (loc:Loc.loc) => 
+          let
             val refLongsymbol = mkLongsymbolWithLoc loc path
-        in
-          (case N.findTstr (requireEnv(), refLongsymbol) of
-             NONE =>  
-             raise
-               UserLevelPrimError
-                 (loc, UE.TyConNotFound("002", {longsymbol = refLongsymbol}))
-           | SOME (sym, tstr as N.TSTR {tfun, defRange}) => 
-             (analyzeTstrRef (refLongsymbol, (sym, tstr));
-              E.evalTfun E.emptyContext tfun)
-           | SOME (sym, tstr as N.TSTR_DTY {tfun,defRange, ...}) => 
-             (analyzeTstrRef (refLongsymbol, (sym, tstr));
-              E.evalTfun E.emptyContext tfun)
-          )
-          handle E.EVALTFUN _ => 
-                 raise
-                   UserLevelPrimError
-                     (loc, UE.TyConNotFound("003", {longsymbol = refLongsymbol}))
-        end : Types.tyCon
+          in
+            (case N.findTstr (requireEnv(), refLongsymbol) of
+                NONE =>  
+                  raise
+                    UserLevelPrimError
+                    (loc, UE.TyConNotFound("002", {longsymbol = refLongsymbol}))
+              | SOME (sym, tstr as N.TSTR {tfun, defRange}) => 
+                (analyzeTstrRef (refLongsymbol, (sym, tstr));
+                  E.evalTfun E.emptyContext tfun)
+              | SOME (sym, tstr as N.TSTR_DTY {tfun,defRange, ...}) => 
+                (analyzeTstrRef (refLongsymbol, (sym, tstr));
+                  E.evalTfun E.emptyContext tfun)
+            )
+            handle E.EVALTFUN _ => 
+                raise
+                  UserLevelPrimError
+                  (loc, UE.TyConNotFound("003", {longsymbol = refLongsymbol}))
+          end : Types.tyCon
 
     fun findIdstatus longsymbol =
         case N.findId (requireEnv(), longsymbol) of
@@ -129,107 +129,107 @@ struct
         | _ => raise IDNotFound
         
     fun getCon (path:string list) =
-     fn (loc:Loc.loc) => 
-        let
+        fn (loc:Loc.loc) => 
+          let
             val refLongsymbol = mkLongsymbolWithLoc loc path
             val (sym, idstatus) = findIdstatus refLongsymbol
-		handle IDNotFound =>
-                       raise        
-			   UserLevelPrimError
-                               (loc, UE.IdNotFound("002", {longsymbol = refLongsymbol}))
-        in
-          case idstatus of
-            I.IDCON {id, longsymbol, ty, defRange} =>
-            (analyzeIdRef (refLongsymbol, (sym, idstatus));
-            {id = id, path = longsymbol,
-             ty = E.evalIty E.emptyContext ty}
-            )
-          | _ => 
-            (
-             Bug.printError "not a con id (findCon):";
-             Bug.printError (String.concatWith "." path);
-             Bug.printError "\n";
-             Bug.printError (Bug.prettyPrint (I.format_idstatus idstatus));
-             Bug.printError "\n";
-             raise
-               UserLevelPrimError
-                 (loc, UE.IdNotFound("002", {longsymbol = refLongsymbol}))
-            )
-        end : Types.conInfo
+              handle IDNotFound =>
+                  raise        
+                    UserLevelPrimError
+                    (loc, UE.IdNotFound("002", {longsymbol = refLongsymbol}))
+          in
+            case idstatus of
+              I.IDCON {id, longsymbol, ty, defRange} =>
+                (analyzeIdRef (refLongsymbol, (sym, idstatus));
+                  {id = id, path = longsymbol,
+                    ty = E.evalIty E.emptyContext ty}
+                )
+            | _ => 
+              (
+                Bug.printError "not a con id (findCon):";
+                Bug.printError (String.concatWith "." path);
+                Bug.printError "\n";
+                Bug.printError (Bug.prettyPrint (I.format_idstatus idstatus));
+                Bug.printError "\n";
+                raise
+                  UserLevelPrimError
+                  (loc, UE.IdNotFound("002", {longsymbol = refLongsymbol}))
+              )
+          end : Types.conInfo
 
     fun getExInfo (path:string list) =
         fn (loc:Loc.loc) =>
-        let
-          val refLongsymbol = mkLongsymbolWithLoc loc path
-          val (sym, idstatus) = findIdstatus refLongsymbol
+          let
+            val refLongsymbol = mkLongsymbolWithLoc loc path
+            val (sym, idstatus) = findIdstatus refLongsymbol
               handle IDNotFound =>
-                     raise        
-                       UserLevelPrimError
-                         (loc, UE.IdNotFound("002", {longsymbol = refLongsymbol}))
-        in
-          case idstatus of
-             I.IDEXVAR {exInfo= exInfo as {used,ty,longsymbol,...},...} => 
-             (if !used then () else (used := true; insert exInfo);
-              analyzeIdRef (refLongsymbol, (sym, idstatus));
-              exInfo)
-           | _ => 
-             (Bug.printError "not an exvar id (getExInfo):";
-              Bug.printError (String.concatWith "." path);
-              Bug.printError "\n";
-              Bug.printError (Bug.prettyPrint (I.format_idstatus idstatus));
-              Bug.printError "\n";
-              raise
-                UserLevelPrimError
+                  raise        
+                    UserLevelPrimError
+                    (loc, UE.IdNotFound("002", {longsymbol = refLongsymbol}))
+          in
+            case idstatus of
+              I.IDEXVAR {exInfo= exInfo as {used,ty,longsymbol,...},...} => 
+                (if !used then () else (used := true; insert exInfo);
+                  analyzeIdRef (refLongsymbol, (sym, idstatus));
+                  exInfo)
+            | _ => 
+              (Bug.printError "not an exvar id (getExInfo):";
+                Bug.printError (String.concatWith "." path);
+                Bug.printError "\n";
+                Bug.printError (Bug.prettyPrint (I.format_idstatus idstatus));
+                Bug.printError "\n";
+                raise
+                  UserLevelPrimError
                   (loc, UE.IdNotFound("002", {longsymbol = refLongsymbol}))
               )
-        end 
+          end 
 
     fun getExExnInfo (path:string list) =
         fn (loc:Loc.loc) =>
-        let
-          val refLongsymbol = mkLongsymbolWithLoc loc path
-          val (sym, idstatus) = findIdstatus refLongsymbol
+          let
+            val refLongsymbol = mkLongsymbolWithLoc loc path
+            val (sym, idstatus) = findIdstatus refLongsymbol
               handle IDNotFound =>
-                     raise        
-                       UserLevelPrimError
-                         (loc, UE.IdNotFound("002", {longsymbol = refLongsymbol}))
-        in
-          case idstatus of
-          I.IDEXEXN {used, longsymbol,version, ty, defRange} => 
-          (analyzeIdRef (refLongsymbol, (sym, idstatus));
-           {path = longsymbol, ty = E.evalIty E.emptyContext ty}
-          )
-        | I.IDEXEXNREP {used, longsymbol,version, ty, defRange} => 
-          (analyzeIdRef (refLongsymbol, (sym, idstatus));
-           {path = longsymbol, ty = E.evalIty E.emptyContext ty}
-          )
-        | _ => 
-          (Bug.printError "not an expected id (getExExnInfo):";
-           Bug.printError (String.concatWith "." path);
-           Bug.printError "\n";
-           Bug.printError (Bug.prettyPrint (I.format_idstatus idstatus));
-           Bug.printError "\n";
-           raise
-             UserLevelPrimError
-               (loc, UE.IdNotFound("002", {longsymbol = refLongsymbol})))
-        end
-        : Types.exExnInfo
+                  raise        
+                    UserLevelPrimError
+                    (loc, UE.IdNotFound("002", {longsymbol = refLongsymbol}))
+          in
+            case idstatus of
+              I.IDEXEXN {used, longsymbol,version, ty, defRange} => 
+                (analyzeIdRef (refLongsymbol, (sym, idstatus));
+                  {path = longsymbol, ty = E.evalIty E.emptyContext ty}
+                )
+            | I.IDEXEXNREP {used, longsymbol,version, ty, defRange} => 
+              (analyzeIdRef (refLongsymbol, (sym, idstatus));
+                {path = longsymbol, ty = E.evalIty E.emptyContext ty}
+              )
+            | _ => 
+              (Bug.printError "not an expected id (getExExnInfo):";
+                Bug.printError (String.concatWith "." path);
+                Bug.printError "\n";
+                Bug.printError (Bug.prettyPrint (I.format_idstatus idstatus));
+                Bug.printError "\n";
+                raise
+                  UserLevelPrimError
+                  (loc, UE.IdNotFound("002", {longsymbol = refLongsymbol})))
+          end
+          : Types.exExnInfo
 
     fun getIcexp (path:string list) =
-     fn (loc:Loc.loc) => 
-        let
-          val exInfo = getExInfo path loc
-        in
-          I.ICEXVAR {exInfo = exInfo, longsymbol = #longsymbol exInfo}
-        end : I.icexp
+        fn (loc:Loc.loc) => 
+          let
+            val exInfo = getExInfo path loc
+          in
+            I.ICEXVAR {exInfo = exInfo, longsymbol = #longsymbol exInfo}
+          end : I.icexp
 
     fun getExVar (path:string list) =
-     fn (loc:Loc.loc) => 
-        let
-          val exInfo = getExInfo path loc
-        in
-          {path = #longsymbol exInfo, ty = E.evalIty E.emptyContext (#ty exInfo)}
-        end : Types.exVarInfo
+        fn (loc:Loc.loc) => 
+          let
+            val exInfo = getExInfo path loc
+          in
+            {path = #longsymbol exInfo, ty = E.evalIty E.emptyContext (#ty exInfo)}
+          end : Types.exVarInfo
 
 
     val SQL_tyCon_command =        ["SMLSharp_SQL_Prim","command"];
@@ -468,6 +468,26 @@ struct
     val REIFY_exInfo_toReifiedTerm =  getExVar  REIFY_exInfo_toReifiedTerm
     val REIFY_exInfo_toReifiedTermPrint =  getExVar  REIFY_exInfo_toReifiedTermPrint
     val REIFY_exInfo_typIdConSetListToConSetEnv =  getExVar  REIFY_exInfo_typIdConSetListToConSetEnv
+
+    val HASH_tyCon_hashtbl  = ["HashTblTy", "hashtbl"];
+    val HASH_exInfo_create  = ["HashTbl", "create"];
+    val HASH_exInfo_default = ["HashTbl", "default"];
+    val HASH_exInfo_find    = ["HashTbl", "find"];
+    val HASH_exInfo_add     = ["HashTbl", "add"];
+    val HASH_icexp_create   = ["HashTbl", "create"];
+    val HASH_icexp_default  = ["HashTbl", "default"];
+    val HASH_icexp_find     = ["HashTbl", "find"];
+    val HASH_icexp_add      = ["HashTbl", "add"];
+
+    val HASH_tyCon_hashtbl  = getTyCon HASH_tyCon_hashtbl
+    val HASH_exInfo_create  = getExVar HASH_exInfo_create
+    val HASH_exInfo_default = getExVar HASH_exInfo_default
+    val HASH_exInfo_find    = getExVar HASH_exInfo_find
+    val HASH_exInfo_add     = getExVar HASH_exInfo_add
+    val HASH_icexp_create   = getIcexp HASH_icexp_create
+    val HASH_icexp_default  = getIcexp HASH_icexp_default
+    val HASH_icexp_find     = getIcexp HASH_icexp_find
+    val HASH_icexp_add      = getIcexp HASH_icexp_add
 
   end
 end

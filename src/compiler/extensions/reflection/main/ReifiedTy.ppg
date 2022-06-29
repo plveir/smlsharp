@@ -177,7 +177,7 @@ struct
       CODEPTRty
     | (*% 
          @format({longsymbol, id, args:ty tys, conSet, layout, size}) 
-           tys(ty)(",") + longsymbol "(" id ")" 
+           "CONSTRUCTty" tys(ty)(",") + longsymbol "(" id ")" 
            2[1 conSet]
            2[1 layout]
        *)

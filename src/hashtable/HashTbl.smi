@@ -1,0 +1,13 @@
+_require "../basis.smi"
+_require "../reify.smi"
+_require "./HashTblTy.smi"
+
+structure HashTbl =
+struct
+  val create  : {hash: string -> word, eq: string * string -> bool} -> HashTblTy.hashtbl
+  val default : unit -> HashTblTy.hashtbl
+  val size    : HashTblTy.hashtbl -> int
+  val add     : ['a#reify. HashTblTy.hashtbl -> string -> 'a -> unit]
+  val find    : ['a#reify, 'b#reify#{}. 'b -> string -> 'a]
+  (* val find    : ['a#reify. hashtbl -> string -> 'a] *)
+end

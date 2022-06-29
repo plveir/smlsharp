@@ -21,3 +21,5 @@ include "./compiler/extensions/reflection/main/TopEnvUtils.ppg.smi"
 (* 一時的に追加 *)
 include "./sql/main/PGSQLDynamic.smi"
 include "./compiler/compilePhases/toplevel/main/Top.smi"
+
+include "./hashtbl.smi"

@@ -153,9 +153,9 @@ struct
             propertyOfOpaqueRep btvEnv (opaqueRep, args)
         )
       | T.BOUNDVARty tid =>
-        case BoundTypeVarID.Map.find (btvEnv, tid) of
+        (case BoundTypeVarID.Map.find (btvEnv, tid) of
           SOME kind => propertyOfKind btvEnv kind
-        | NONE => NONE
+        | NONE => NONE)
 
   and propertyOfOpaqueRep btvEnv (opaqueRep, args) =
       case opaqueRep of

@@ -421,6 +421,7 @@ struct
       let
         val accum = newAccum ()
         val decls = map (compileDecl accum) decls
+        (* val _ = map (fn decl => (print (Bug.prettyPrint (B.formatWithType_bcdecl decl)))) decls *)
       in
         case extractDecls accum Loc.noloc of
           nil => ()

@@ -55,6 +55,8 @@ local
       constraints := c :: !constraints
   fun addConstraints cl =
       List.app (fn c => addConstraint c) cl
+  val printConstraints =
+      List.app (fn c => (print (Bug.prettyPrint (T.format_constraint c)); print ", ")) (!constraints)
 
   val emptyScopedTvars = nil : IC.scopedTvars
 
@@ -1525,6 +1527,12 @@ in
                         argTpexpList} =
       let
         val (domtyList, ranty, instlist, constraints) = TB.coerceFunM (funTy, argTyList)
+        (* val _ = print "monoApplyM domty\n"
+        val _ = app (fn t => print (Bug.prettyPrint (T.format_ty t) ^ ",")) domtyList
+        val _ = print "\nargty \n"
+        val _ = app (fn t => print (Bug.prettyPrint (T.format_ty t) ^ ",")) argTyList
+        val _ = print "\nranty \n"
+        val _ = print (Bug.prettyPrint (T.format_ty ranty)) *)
         val _ = addConstraints constraints
         val newFunTpexp =
           case instlist of
@@ -1535,6 +1543,8 @@ in
                  expTy=funTy,
                  instTyList=instlist,
                  loc=termLoc}
+        (* val _ = print "\nnewFunTpexp \n"
+        val _ = print (Bug.prettyPrint (TC.format_tpexp newFunTpexp)) *)
         val tyPairs = ListPair.zip (argTyList, domtyList)
 
 (* 
@@ -1656,7 +1666,6 @@ in
         T.CONSTRUCTty{tyCon=tyCon, args= map (revealTyInterface) args}
       | T.POLYty {boundtvars, constraints, body} =>
         T.POLYty {boundtvars = boundtvars, constraints = constraints, body = revealTyInterface body}
-
   fun generalizeIfNotExpansive lambdaDepth ((ty, tpexp), loc) =
       if E.isError() orelse TCU.expansive tpexp then
         (ty, tpexp)
@@ -2179,7 +2188,6 @@ in
    *)
 
   and typeinfExp lambdaDepth applyDepth (context : TIC.context) icexp =
-(*  (printicexptype icexp; *)
      case icexp of
         IC.ICERROR =>
         let
@@ -2714,17 +2722,17 @@ in
                              end)
                          funItyList
                      end
-	      in
+              in
                 monoApplyM
                   context
                   {termLoc=loc,
-                   funTy=funTy,
-                   argTyList=argTyList,
-                   funTpexp=funExp,
-                   funLoc=funLoc,
-                   argTpexpList=argExpList
+                  funTy=funTy,
+                  argTyList=argTyList,
+                  funTpexp=funExp,
+                  funLoc=funLoc,
+                  argTpexpList=argExpList
                   }
-              handle MONOAPPLY x => x
+                handle MONOAPPLY x => x
               end
           fun processCon (lambdaDepth,makeNewTermBody,funITy,funLoc) =
               case evalArgs lambdaDepth icexpList of
@@ -2893,9 +2901,17 @@ in
               val externalLongsymbol = exInfoToLongsymbol exInfo
               val ty = ITy.evalIty context ty
                   handle e => (P.print "ity17\n"; raise e)
-	      val funExp = TC.TPEXVAR ({path=externalLongsymbol, ty=ty}, loc)
+              val funExp = TC.TPEXVAR ({path=externalLongsymbol, ty=ty}, loc)
+              val (resultTy, resultExp) = processVar (ty, funExp, loc)
+              (* val _ = (print (
+                "\nICAPPM DEFAULT_\n" ^
+                (Bug.prettyPrint (TC.formatWithType_tpexp resultExp)) ^
+                " : " ^
+                (Bug.prettyPrint (T.format_ty resultTy)) ^ 
+                "\n"
+              )) *)
             in
-              processVar (ty, funExp, loc)
+              (resultTy, resultExp)
             end
           | IC.ICBUILTINVAR {primitive, ty, loc} =>
             let
@@ -3745,9 +3761,11 @@ in
                                   },
                     utvarOpt = NONE
                    }
+               val reifyTy1 = newReifyTvarTy ()
+               val reifyTy2 = newReifyTvarTy ()
              in
                (
-                U.unify [(ty1, recordTy)];
+                U.unify [(ty1, recordTy), (elemTy, reifyTy1), (ty1, reifyTy2)];
                  (elemTy, TC.TPSELECT{label=label,
                                       exp=tpexp,
                                       expTy=recordTy,
@@ -3786,9 +3804,11 @@ in
                                    },
                      utvarOpt = NONE
                     }
+               val reifyTy1 = newReifyTvarTy ()
+               val reifyTy2 = newReifyTvarTy ()
              in
                (
-                 U.unify [(ty1, recordTy)];
+                 U.unify [(ty1, recordTy), (elemTy, reifyTy1), (ty1, reifyTy2)];
                  (elemTy, TC.TPSELECT{label=label,
                                       exp=tpexp,
                                       expTy=recordTy,
@@ -4075,6 +4095,381 @@ in
          end
          handle Fail => (T.ERRORty, TC.TPERROR)
      )
+      | IC.ICHASH (exp, loc) => 
+        typeinfExp lambdaDepth applyDepth context (IC.ICAPPM((UP.HASH_icexp_create loc), [exp], loc))
+      | IC.ICHASHDEFAULT (loc) =>
+        typeinfExp lambdaDepth applyDepth context (UP.HASH_icexp_default loc)
+      | IC.ICHASHFIND (exp1, exp2, loc) =>
+      let
+        val body = IC.ICAPPM (IC.ICAPPM ((UP.HASH_icexp_find loc), [exp1], loc), [exp2], loc)
+        val (resultTy, resultExp) = typeinfExp lambdaDepth applyDepth context body
+        (* val (ty1, tpexp1) = typeinfExp lambdaDepth applyDepth context exp1
+        val (ty2, tpexp2) = typeinfExp lambdaDepth applyDepth context exp2
+        val funIcexp = (UP.HASH_icexp_find loc)
+        val (refLongsymbol, exInfo) =
+          case funIcexp of
+            IC.ICEXVAR {longsymbol=refLongsymbol, 
+                          exInfo=exInfo as {used, ty, longsymbol, version}} => (refLongsymbol, exInfo)
+          | _ => raise bug "ICHASHFIND funIcexp unreachable"
+        val loc = Symbol.longsymbolToLoc refLongsymbol
+        val externalLongsymbol = exInfoToLongsymbol exInfo
+        val funTy = ITy.evalIty context (#ty exInfo)
+            handle e => (P.print "ity17\n"; raise e)
+        val _ = print (Bug.prettyPrint (T.format_ty funTy))
+        val (exceptArgTy2, resultTy) = case funTy of
+          T.POLYty {body=T.FUNMty ([_], T.FUNMty ([ty], resultTy)),...} => (ty, resultTy)
+        | _ => raise bug "ICHASHFIND exceptArgTy2 unreachable"
+
+        val funTpexp = TC.TPEXVAR ({path=externalLongsymbol, ty=funTy}, loc)
+          
+        val (domtyList, ranty, instlist, constraints) = TB.coerceFunM (funTy, [ty1])
+        val _ = print "\n"
+        val _ = print (Bug.prettyPrint (T.format_ty ranty))
+        handle TB.CoerceFun =>
+          (
+          E.enqueueError "Typeinf 017" (loc, E.NonFunction ("017",{ty = funTy}));
+          raise (MONOAPPLY (T.ERRORty, TC.TPERROR))
+          )
+        val _ = addConstraints constraints
+        val newFunTpexp =
+          case instlist of
+            NONE => funTpexp
+          | SOME instlist =>
+              TC.TPTAPP
+                {exp=funTpexp,
+                expTy=funTy,
+                instTyList=instlist,
+                loc=loc}
+        val resultExp =
+          TC.TPAPPM {funExp = TC.TPAPPM {funExp = newFunTpexp,
+                                          funTy = T.FUNMty(domtyList, ranty),
+                                          argExpList = [tpexp1],
+                                          loc=loc},
+                    funTy = T.FUNMty([T.FUNMty(domtyList, ranty)], ty2),
+                    argExpList = [tpexp2],
+                    loc=loc}
+          val (_, funItyList) = stripIty funIcexp
+          fun evalArgsVar lambdaDepth icexpList =
+            foldr
+              (fn (icexp, (argTyList,agrExpList)) =>
+                  let
+                    val (ty,tpexp) =
+                        typeinfExp lambdaDepth inf context icexp
+                    val (ty, _, instConstraints, tpexp) = TCU.freshInst (ty, tpexp)
+                    val _ = addConstraints instConstraints
+                  in (ty::argTyList, tpexp::agrExpList)
+                  end
+              )
+              (nil,nil)
+            icexpList
+          fun processVar (funTy, funExp, funLoc)  =
+            let
+              val (argTyList,argExpList) = evalArgsVar lambdaDepth icexpList
+              val _ =
+                  case funItyList of
+                    nil => ()
+                  | _ =>
+                    let
+                      val (funTy, _, funConstraints) = TIU.freshTopLevelInstTy funTy
+                      val _ = addConstraints funConstraints
+                    in
+                      app
+                        (fn ity =>
+                            let
+                              val annotatedTy = ITy.evalIty context ity
+                                  handle e => (P.print "ity13\n"; raise e)
+                            in
+                              (U.unify [(funTy, annotatedTy)])
+                              handle
+                              U.Unify =>
+                              (unifFail 13;
+                              E.enqueueError "Typeinf 020"
+                                              (
+                                              funLoc,
+                                              E.TypeAnnotationNotAgree
+                                                ("020",{ty=funTy, annotatedTy=annotatedTy})
+                                              )
+                              )
+                            end)
+                        funItyList
+                    end
+              val (domtyList, ranty, instlist, constraints) = TB.coerceFunM (funTy, argTyList)
+              val _ = addConstraints constraints
+              val newFunTpexp =
+                case instlist of
+                  NONE => funTpexp
+                | SOME instlist =>
+                    TC.TPTAPP
+                      {exp=funTpexp,
+                      expTy=funTy,
+                      instTyList=instlist,
+                      loc=termLoc}
+            in
+              ListPair.zip (argTyList, domtyList)
+            end
+          val (domtyList, ranty, instlist, constraints) = TB.coerceFunM (funTy, argTyList)
+          val _ = addConstraints constraints
+          val newFunTpexp =
+            case instlist of
+              NONE => funTpexp
+            | SOME instlist =>
+                TC.TPTAPP
+                  {exp=funTpexp,
+                  expTy=funTy,
+                  instTyList=instlist,
+                  loc=termLoc}
+          val tyPairs = ListPair.zip (argTyList, domtyList)
+        in
+        (U.unify tyPairs;
+         (
+          ranty,
+          TC.TPAPPM {funExp = newFunTpexp,
+                     funTy = T.FUNMty(domtyList, ranty),
+                     argExpList = argTpexpList,
+                     loc=termLoc}
+         )
+        )
+        handle
+        U.Unify =>
+        (
+         unifFail 6;
+         E.enqueueError "Typeinf 016"
+           (termLoc,
+            E.TyConListMismatch
+              ("016",{argTyList = argTyList, domTyList = domtyList}));
+         raise (MONOAPPLY (T.ERRORty, TC.TPERROR))
+        )
+      end *)
+        
+        (* val (resultTy, resultExp) = processVar (ty, funExp, loc) *)
+        (* val (targetTy, targetTpExp) = typeinfExp lambdaDepth inf context exp1 *)
+        (* val body = IC.ICAPPM (IC.ICAPPM (funIcExp, [exp1], loc), [exp2], loc)
+        val (resultTy, resultExp) = typeinfExp lambdaDepth applyDepth context body
+        val _ = print "FIND DEBUG \n"
+        val _ = print (Bug.prettyPrint (T.format_ty resultTy))
+        val _ = print "\n"
+        val _ = print (Bug.prettyPrint (TC.formatWithType_tpexp resultExp))
+        val _ = print "\n"
+        val _ = print "FIND DEBUG END\n"
+        val targetTy = case resultTy of
+          T.FUNMty (_, T.FUNMty(_, ty3)) => ty3
+        | _ => T.ERRORty
+        val targetTpExp = case resultExp of
+          TC.TPAPPM {argExpList=[TC.TPAPPM {argExpList=[arg1], ...}],...} => arg1
+        | _ => TC.TPERROR *)
+
+        (* val funIcExp = (UP.HASH_icexp_find loc)
+        val (funTy, funTpExp) = typeinfExp lambdaDepth applyDepth context funIcExp
+        val _ = print ("\nfunTpExp\n" ^ (Bug.prettyPrint (TC.formatWithType_tpexp funTpExp)))
+        val _ = print ("\nfunTy\n" ^ (Bug.prettyPrint (T.format_ty funTy)))
+
+        val (funTy, _, funConstraints, funExp) = TCU.freshInst (funTy, funTpExp)
+        (* val _ = print ("\nfunExp\n" ^ (Bug.prettyPrint (TC.format_tpexp funExp))) *)
+        val _ = print ("\nfunTy\n" ^ (Bug.prettyPrint (T.format_ty funTy)))
+
+        val _ = addConstraints funConstraints
+        val (exceptArgTy2, retTy) = case funTy of
+          T.FUNMty (_, T.FUNMty([ty2], ty3)) => (ty2, ty3)
+        | _ => (T.ERRORty, T.ERRORty) 
+        val (resultTy, resultExp) = (
+          retTy,
+          TC.TPAPPM {
+            funExp = TC.TPAPPM {funExp = funExp,
+                     funTy = funTy,
+                     argExpList = [tpexp1],
+                     loc=loc},
+            funTy = T.FUNMty([exceptArgTy2], retTy),
+            argExpList = [tpexp2],
+            loc=loc
+          }
+        ) *)
+        val _ = print "\n"
+        val _ = print "\nresultExp\n"
+        val _ = print (Bug.prettyPrint (TC.format_tpexp resultExp))
+        val _ = print "\nresultTy\n"
+        val _ = print (Bug.prettyPrint (T.format_ty (resultTy)))
+        val _ = print "\n"
+      in
+        (resultTy, resultExp)
+        (* case ty1 of
+          T.RECORDty tyFields => (resultTy, resultExp)
+          | T.TYVARty (ref (T.TVAR tvkind)) =>
+            let
+              val hashKindedTy =
+                  T.newtyRaw
+                  {
+                  lambdaDepth = lambdaDepth,
+                  kind = T.KIND {tvarKind = T.REC (RecordLabel.Map.empty),
+                                  properties = T.emptyProperties,
+                                  dynamicKind = NONE
+                                },
+                  utvarOpt = NONE
+                  }
+            in
+              (
+                U.unify [(targetTy, hashKindedTy)]; (resultTy, resultExp)
+              )
+              handle U.Unify =>
+                    (
+                      unifFail 23;
+                      E.enqueueError "Typeinf 034"
+                        (loc,E.TyConMismatch
+                              ("034",{domTy=hashKindedTy, argTy=targetTy}));
+                      (T.ERRORty, TC.TPERROR)
+                    )
+            end
+          | _ => this case may be empty : このケースはありうる；318_record.sml
+            let
+              val (ty1, tpexp1) =
+                  case ty1 of
+                    T.POLYty _ => 
+                    let
+                      val (ty1, _, instConstraints, tpexp1) = TCU.freshInst (ty1, tpexp1)
+                      val _ = addConstraints instConstraints
+                    in
+                      (ty1, tpexp1)
+                    end
+                  | _ => (ty1, tpexp1)
+              val hashKindedTy =
+                  T.newtyRaw
+                  {
+                    lambdaDepth = lambdaDepth,
+                    kind = T.KIND {tvarKind = T.REC (RecordLabel.Map.empty),
+                                  properties = T.emptyProperties,
+                                  dynamicKind = NONE
+                                  },
+                    utvarOpt = NONE
+                  }
+            in
+              (
+                U.unify [(ty1, hashKindedTy), (ty2, exceptArgTy2)]; (resultTy, resultExp)
+              )
+              handle U.Unify =>
+                    (
+                      unifFail 24;
+                      E.enqueueError "Typeinf 035"
+                      (loc,
+                        E.TyConMismatch("035",{domTy=hashKindedTy,argTy=ty1}));
+                      (T.ERRORty, TC.TPERROR)
+                    )
+            end *)
+        end
+      | IC.ICHASHADD (exp1, exp2, exp3, loc) =>
+      let
+        val _ = print "\n==============ADD DEBUG\n"
+        val funIcExp = (UP.HASH_icexp_add loc)
+        val body = IC.ICAPPM(IC.ICAPPM (IC.ICAPPM (funIcExp, [exp1], loc), [exp2], loc), [exp3], loc)
+        val (resultTy, resultExp) = typeinfExp lambdaDepth applyDepth context body
+        val targetTy = case resultTy of
+          T.FUNMty (_, T.FUNMty(_, T.FUNMty(_, ty2))) => ty2
+        | _ => (T.ERRORty) 
+        val targetTpExp = case resultExp of
+          TC.TPAPPM {argExpList=[TC.TPAPPM {argExpList=[TC.TPAPPM {argExpList=[arg1], ...}], ...}],...} => arg1
+        | _ => TC.TPERROR
+        (* val (ty1, tpexp1) = typeinfExp lambdaDepth applyDepth context exp1
+        val ty1 = TB.derefTy ty1
+        val (ty2, tpexp2) = typeinfExp lambdaDepth applyDepth context exp2
+        val ty2 = TB.derefTy ty2
+        val (ty3, tpexp3) = typeinfExp lambdaDepth applyDepth context exp3
+        val ty3 = TB.derefTy ty3
+        val funIcExp = (UP.HASH_icexp_add loc)
+        val (funTy, funTpExp) = typeinfExp lambdaDepth applyDepth context funIcExp
+        val _ = print ("\nfunTpExp\n" ^ (Bug.prettyPrint (TC.format_tpexp funTpExp)))
+        val _ = print ("\nfunTy\n" ^ (Bug.prettyPrint (T.format_ty funTy)))
+
+        val (funTy, _, funConstraints, funExp) = TCU.freshInst (funTy, funTpExp)
+        (* val _ = print ("\nfunExp\n" ^ (Bug.prettyPrint (TC.format_tpexp funExp))) *)
+        val _ = print ("\nfunTy\n" ^ (Bug.prettyPrint (T.format_ty funTy)))
+
+        val _ = addConstraints funConstraints
+        val (exceptArgTy2, exceptArgTy3, retTy, funTy2, funTy3) = case funTy of
+          T.FUNMty (_, funTy2 as T.FUNMty([ty2], funTy3 as T.FUNMty([ty3], ty4))) => (ty2, ty3, ty4, funTy2, funTy3)
+        | _ => (T.ERRORty, T.ERRORty, T.ERRORty, T.ERRORty, T.ERRORty) 
+        val (resultTy, resultExp) = (
+          retTy,
+          TC.TPAPPM {
+            funExp = TC.TPAPPM {funExp = TC.TPAPPM {funExp = funExp,
+                                          funTy = funTy,
+                                          argExpList = [tpexp1],
+                                          loc=loc},
+                     funTy = funTy2,
+                     argExpList = [tpexp2],
+                     loc=loc},
+            funTy = funTy3,
+            argExpList = [tpexp3],
+            loc=loc
+          }
+        ) *)
+        val _ = print "\n"
+        val _ = print "\nresultExp\n"
+        val _ = print (Bug.prettyPrint (TC.format_tpexp resultExp))
+        val _ = print "\nresultTy\n"
+        val _ = print (Bug.prettyPrint (T.format_ty (resultTy)))
+        val _ = print "\n"
+      in
+        case targetTy of
+          T.RECORDty tyFields => (resultTy, resultExp)
+          | T.TYVARty (ref (T.TVAR tvkind)) =>
+            let
+              val hashKindedTy =
+                  T.newtyRaw
+                  {
+                  lambdaDepth = lambdaDepth,
+                  kind = T.KIND {tvarKind = T.REC (RecordLabel.Map.empty),
+                                  properties = T.emptyProperties,
+                                  dynamicKind = NONE
+                                },
+                  utvarOpt = NONE
+                  }
+            in
+              (
+                U.unify [(targetTy, hashKindedTy)]; (resultTy, resultExp)
+              )
+              handle U.Unify =>
+                    (
+                      unifFail 23;
+                      E.enqueueError "Typeinf 034"
+                        (loc,E.TyConMismatch
+                              ("034",{domTy=hashKindedTy, argTy=targetTy}));
+                      (T.ERRORty, TC.TPERROR)
+                    )
+            end
+          | _ => (* this case may be empty : このケースはありうる；318_record.sml *)
+            let
+              val (targetTy, targetTpExp) =
+                  case targetTy of
+                    T.POLYty _ => 
+                    let
+                      val (targetTy, _, instConstraints, targetTpExp) = TCU.freshInst (targetTy, targetTpExp)
+                      val _ = addConstraints instConstraints
+                    in
+                      (targetTy, targetTpExp)
+                    end
+                  | _ => (targetTy, targetTpExp)
+              val hashKindedTy =
+                  T.newtyRaw
+                  {
+                    lambdaDepth = lambdaDepth,
+                    kind = T.KIND {tvarKind = T.REC (RecordLabel.Map.empty),
+                                  properties = T.emptyProperties,
+                                  dynamicKind = NONE
+                                  },
+                    utvarOpt = NONE
+                  }
+            in
+              (
+                U.unify [(targetTy, hashKindedTy)]; (resultTy, resultExp)
+              )
+              handle U.Unify =>
+                    (
+                      unifFail 24;
+                      E.enqueueError "Typeinf 035"
+                      (loc,
+                        E.TyConMismatch("035",{domTy=hashKindedTy,argTy=targetTy}));
+                      (T.ERRORty, TC.TPERROR)
+                    )
+            end
+        end
 
   and typeinfFFIFun lambdaDepth applyDepth context ffifun loc =
       case ffifun of
@@ -4830,6 +5225,7 @@ in
           (TB.adjustDepthInTy (ref false) lambdaDepth ty;
            VarMap.insert(varEnv, var, TC.VARID varInfo))
       val lambdaDepth = lambdaDepth
+      (* val _ = print (Bug.prettyPrint (IC.format_icdecl icdecl)) *)
     in
       case icdecl of
         IC.ICVAL (scopedTvars, icpatIcexpList, loc) =>
@@ -4846,29 +5242,30 @@ in
               foldl
                 (fn ((icpat,icexp),(localBinds,patternVarBinds,extraBinds)) =>
                     let
+                      val _ = print ((Bug.prettyPrint (IC.format_icexp icexp)) ^ "\n")
                       val (newContext, addedUtvars) =
                           evalScopedTvars lambdaDepth context scopedTvars loc
                       val (localBinds1, patternVarBinds1, extraBinds1) =
                           (decomposeValbind
-                             lambdaDepth
-                             newContext
-                             (icpat, icexp))
+                            lambdaDepth
+                            newContext
+                            (icpat, icexp))
                           handle
                           exn as E.RecordLabelSetMismatch _ =>
                           (
-                           E.enqueueError "Typeinf 065"
-                             (Loc.mergeLocs
+                          E.enqueueError "Typeinf 065"
+                            (Loc.mergeLocs
                                 (IC.getLocPat icpat, IC.getLocExp icexp),
                               exn);
-                           (nil, nil, nil)
+                          (nil, nil, nil)
                           )
                         | exn as E.PatternExpMismatch _ =>
                           (
-                           E.enqueueError "Typeinf 066"
-                             (Loc.mergeLocs
+                          E.enqueueError "Typeinf 066"
+                            (Loc.mergeLocs
                                 (IC.getLocPat icpat, IC.getLocExp icexp),
                               exn);
-                           (nil, nil, nil)
+                          (nil, nil, nil)
                           )
                      (* The following is added to fix the bug 68. *)
                       val tyvarSet =
@@ -5683,7 +6080,7 @@ in
         let
           val varInfoLoc = Symbol.longsymbolToLoc (#longsymbol varInfo)
           val varInfo =
-              case VarMap.find(#varEnv context, varInfo)  of
+              (case VarMap.find (#varEnv context, varInfo) of
                 SOME (TC.VARID varInfo) =>
                 varInfo # {path = Symbol.replaceLocLongsymbol
                                     varInfoLoc
@@ -5692,7 +6089,7 @@ in
                 raise bug "recfunvar in ICEXNTAGD"
               | NONE =>
                 if E.isError() then raise Fail
-                else raise bug "var not found (3)"
+                else raise bug "var not found (3)")
         in
           (TIC.emptyContext,
            [TC.TPEXNTAGD

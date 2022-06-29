@@ -178,6 +178,14 @@ struct
       | I.ICDYNAMICVIEW (icexp, ty, loc) =>
         I.ICDYNAMICVIEW (compileExp icexp, ty, loc)
       | I.ICREIFYTY (ty, loc) => icexp
+      | I.ICHASH (exp1, loc) =>
+        I.ICHASH (compileExp exp1, loc)
+      | I.ICHASHDEFAULT (exp1, loc) => icexp
+      | I.ICHASHFIND (exp1, exp2, loc) => 
+        I.ICHASHFIND (compileExp exp1, compileExp exp2, loc)
+      | I.ICHASHADD (exp1, exp2, exp3, loc) => 
+        I.ICHASHADD (compileExp exp1, compileExp exp2, compileExp exp3, loc)
+
 
   and compileFFIFun ffiFun =
       case ffiFun of

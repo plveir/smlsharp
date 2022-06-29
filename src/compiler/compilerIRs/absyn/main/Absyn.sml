@@ -427,6 +427,22 @@ struct
           @format(ty * loc) "_reifyTy(" +  ty + ")"
        *)
       EXPREIFYTY of ty * loc
+    | (*% 
+          @format(loc) "HASH"
+       *)
+      EXPHASH of exp * loc
+    | (*% 
+          @format(loc) "HASHDEFAULT"
+       *)
+      EXPHASHDEFAULT of loc
+    | (*% 
+          @format(exp1 * exp2 * loc) "HASHFIND"
+       *)
+      EXPHASHFIND of exp * exp * loc
+    | (*% 
+          @format(exp1 * exp2 * exp3 * loc) "HASHADD"
+       *)
+      EXPHASHADD of exp * exp * exp * loc
 
   and ffiFun
     = (*%
@@ -983,6 +999,10 @@ struct
       | EXPDYNAMICVIEW (_, _, loc) => loc
       | EXPDYNAMICCASE (_, _, loc) => loc
       | EXPREIFYTY (_, loc) => loc
+      | EXPHASH (_, loc) => loc
+      | EXPHASHDEFAULT (loc) => loc
+      | EXPHASHFIND (_, _, loc) => loc
+      | EXPHASHADD (_, _, _, loc) => loc
 
   fun getLocPat pat =
       case pat of 

@@ -13,6 +13,7 @@ struct
   structure T = Types
   structure DK = DynamicKind
   structure DKU = DynamicKindUtils
+  structure UP = UserLevelPrimitive
 
   fun bug s = Bug.Bug ("PolyTyElimination: " ^ s)
 
@@ -263,6 +264,7 @@ struct
         | T.DTY _ => T.CONSTRUCTty {tyCon = tyCon, args = args}
 
     fun equalTy r (ty1, ty2) =
+        (* (print "\nPolyTyElimination equalTy\n"; print (Bug.prettyPrint (T.format_ty ty1)); print "\n"; print (Bug.prettyPrint (T.format_ty ty2)); print "\n";  *)
         case (ty1, ty2) of
           (T.TYVARty (ref (T.SUBSTITUTED ty1)), ty2) => equalTy r (ty1, ty2)
         | (ty1, T.TYVARty (ref (T.SUBSTITUTED ty2))) => equalTy r (ty1, ty2)
@@ -404,6 +406,7 @@ struct
         else raise NotEqual
 
     and equalTvarKind r (tvarKind1, tvarKind2) =
+        (* (print "\nequalTvarKind\n"; *)
         case (tvarKind1, tvarKind2) of
           (T.OCONSTkind tys1, T.OCONSTkind tys2) =>
           equalList equalTy r (tys1, tys2)
@@ -437,6 +440,7 @@ struct
   in
 
   fun equal r (ty1, ty2) =
+      (* (print "\n!equal!\n"; *)
       ignore (equalTy r (ty1, ty2))
       handle NotEqual => raise bug "equal"
 
@@ -446,7 +450,7 @@ struct
 
   fun equalAll r nil = ()
     | equalAll r (x :: nil) = ()
-    | equalAll r (x :: h :: t) = (equal r (x, h); equalAll r (x :: t))
+    | equalAll r (x :: h :: t) = (print "\n!equalAll!\n"; (equal r (x, h); equalAll r (x :: t)))
 
   val equalTy =
       fn x =>
@@ -690,6 +694,7 @@ struct
       end
 
   fun analyzePat r (env:a_env) tppat =
+      (* (print "analyzePat"; *)
       case tppat of
         C.TPPATERROR _ => D.TPPATERROR
       | C.TPPATCONSTANT (const, ty, loc) =>
@@ -756,6 +761,7 @@ struct
         D.TPPATWILD (analyzeTy r env ty, loc)
 
   fun analyzeExp r (env:a_env) tpexp =
+      (* (print ("\nanalyzeExp\n" ^ (Bug.prettyPrint (C.formatWithType_tpexp tpexp))); *)
       case tpexp of
         C.TPERROR => D.TPERROR
       | C.TPCONSTANT {const, ty, loc} =>
@@ -893,9 +899,10 @@ struct
           val funExp = analyzeExp r env funExp
           val argExpList = map (analyzeExp r env) argExpList
         in
+          (* print "deref "; print (Bug.prettyPrint (T.format_ty (TypesBasics.derefTy (#2 funExp)))); print "\n"; *)
           case TypesBasics.derefTy (#2 funExp) of
             T.FUNMty (argTys, bodyTy) =>
-            equalList r (argTys, map #2 argExpList)
+            (equalList r (argTys, map #2 argExpList))
           | _ => raise bug "analyzeExp: TPAPPM: not funty";
           D.TPAPPM
             {funExp = funExp,
@@ -1178,6 +1185,7 @@ struct
       end
 
   and analyzeDecl r env tpdecl =
+      (* (print ("\nanalyzeDecl\n" ^ (Bug.prettyPrint (C.formatWithType_tpdecl tpdecl))); *)
       case tpdecl of
         C.TPEXD (exnInfo, loc) =>
         D.TPEXD
@@ -1399,6 +1407,7 @@ struct
   fun lubInst (EMPTY, x) = x
     | lubInst (x, EMPTY) = x
     | lubInst (MONO ty1, MONO ty2) =
+      (* (print "\n!lubInst!\n"; ( *)
       if equalTy (ty1, ty2)
       then MONO ty1
       else lubInst (instOf' ty1, instOf' ty2)
