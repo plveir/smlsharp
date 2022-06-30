@@ -54,6 +54,7 @@ struct
     | WORD16 of word16
     | WORD64 of word64
     | WORD8 of word8
+    | HASH of boxed
 
   type 'a dyn (= boxed)
   val toDynamic : ['a. reifiedTerm -> 'a dyn]

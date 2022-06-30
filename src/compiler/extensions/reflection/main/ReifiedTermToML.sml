@@ -90,6 +90,7 @@ struct
         | RTy.WORD64ty => UNBOXED
         | RTy.WORD8ty => UNBOXED
         | RTy.WORD32ty => UNBOXED
+        | RTy.HASHty => BOXED
 
     fun isBoxed ty = case constTag ty of BOXED => true | _ => false 
 
@@ -305,6 +306,7 @@ struct
               | (R.WORD8 w, RTy.WORD8ty) => toBoxed w
               | (R.WORD16 w, RTy.WORD16ty) => toBoxed w
               | (R.WORD32 w, RTy.WORD32ty) => toBoxed w
+              | (R.HASH b, RTy.HASHty) => toBoxed b
               | (R.BUILTIN, _) => raise UnsupportedTerm term
               | (R.FUN {closure=f, ty=ty}, specTy as RTy.FUNMty _) => 
                 if RTy.reifiedTyEq (ty, specTy) then toBoxed f

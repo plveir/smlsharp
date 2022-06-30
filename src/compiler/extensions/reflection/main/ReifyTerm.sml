@@ -548,6 +548,7 @@ struct
           | RTy.WORD16ty => R.WORD16 (getWord16 obj)
           | RTy.WORD64ty => R.WORD64 (getWord64 obj)
           | RTy.WORD32ty => R.WORD32 (getWord32 obj)
+          | RTy.HASHty => R.HASH (getBoxed obj)
         end
 
     fun ('a#reify) dynamic (x:'a) : dynamic = 

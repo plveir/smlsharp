@@ -285,6 +285,9 @@ struct
       WORD16ty
     | (*% @format "word64" *)
       WORD64ty
+    | (*% @format "hashtbl" *)
+      HASHty
+      
 
   withtype conSet = 
       (*% 
@@ -379,6 +382,7 @@ struct
       | WORD64ty => word64Size
       | WORD8ty => word8Size
       | WORD32ty => word32Size
+      | HASHty => ptrSize
 
   fun isGroundTy reifiedTy =
       case reifiedTy of
@@ -426,6 +430,7 @@ struct
     | WORD32ty => true
     | WORD64ty => true
     | WORD8ty => true
+    | HASHty => false
 
   fun isBoxed reifiedTy = 
       case reifiedTy of
@@ -474,6 +479,7 @@ struct
       | WORD32ty =>  false
       | WORD64ty =>  false
       | WORD8ty =>  false
+      | HASHty => true
 
   fun reifiedTyEq' (ty1, ty2) =
       let
@@ -575,6 +581,7 @@ struct
             | (WORD16ty, WORD16ty) => idEnv
             | (WORD64ty, WORD64ty) => idEnv
             | (WORD8ty, WORD8ty) => idEnv
+            | (HASHty, HASHty) => idEnv
             | _ => raise NotEQ
       in
         SOME (eq emptyEquivEnv emptyIdEnv (ty1, ty2))
@@ -890,5 +897,6 @@ struct
     | WORD32ty => true
     | WORD64ty => true
     | WORD8ty => true
+    | HASHty => false
 
 end

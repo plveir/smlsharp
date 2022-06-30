@@ -149,13 +149,11 @@ in
                    kindFields
                | T.TYVARty _ => raise bug "checkKind"
                | T.CONSTRUCTty {tyCon=tyCon,...} =>
-                   if (TypID.eq (#id tyCon, #id (UP.HASH_tyCon_hashtbl Loc.noloc)))
-                   then 
-                    RecordLabel.Map.foldri
-                      (fn (l, ty, tyEquations) => tyEquations)
-                      nil
-                      kindFields
-                   else raise bug "checkCONSTRUCTKind"
+                   ((if (TypID.eq (#id tyCon, #id (UP.HASH_tyCon_hashtbl Loc.noloc)))
+                   then
+                    nil
+                   else raiseUnify 12)
+                   handle UP.UserLevelPrimError _ => raiseUnify 13)
                | _ => raiseUnify 7)
             | T.OCONSTkind L =>
               (case List.filter

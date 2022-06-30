@@ -83,6 +83,7 @@ struct
     | WORD32ty
     | WORD64ty
     | WORD8ty
+    | HASHty
 
   type conSet = reifiedTy option SEnv.map
   datatype void = void

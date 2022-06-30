@@ -199,6 +199,7 @@ struct
       | WORD64ty => Con loc (UP.REIFY_conInfo_WORD64ty loc) NONE
       | WORD8ty => Con loc (UP.REIFY_conInfo_WORD8ty loc) NONE
       | WORD32ty => Con loc (UP.REIFY_conInfo_WORD32ty loc) NONE
+      | HASHty => Con loc (UP.REIFY_conInfo_HASHty loc) NONE
   and RecordTy loc (labelMap : reifiedTy RecordLabel.Map.map)  =
       let
         val StringRieifedTyList =
@@ -355,6 +356,7 @@ struct
       | WORD64ty => Con loc (UP.REIFY_conInfo_WORD64ty loc) NONE
       | WORD8ty => Con loc (UP.REIFY_conInfo_WORD8ty loc) NONE
       | WORD32ty => Con loc (UP.REIFY_conInfo_WORD32ty loc) NONE
+      | HASHty => Con loc (UP.REIFY_conInfo_HASHty loc) NONE
   and RecordTyWithLookUp lookup loc (labelMap : reifiedTy RecordLabel.Map.map)  =
       let
         val StringRieifedTyList =

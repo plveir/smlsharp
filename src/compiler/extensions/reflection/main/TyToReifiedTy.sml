@@ -138,6 +138,8 @@ struct
         else if eqTyCon (tyCon, BT.codeptrTyCon) then R.CODEPTRty
         else if eqTyCon (tyCon, BT.exnTyCon) then R.EXNty
         else if eqTyCon (tyCon, BT.exntagTyCon) then R.EXNTAGty
+        else if eqTyCon (tyCon, (U.HASH_tyCon_hashtbl loc)) 
+          handle U.UserLevelPrimError _ => false then R.HASHty
         else if eqTyCon (tyCon, BT.ptrTyCon) then 
           R.PTRty  (toReifiedTy loc (oneArg args))
         else if eqTyCon (tyCon, BT.arrayTyCon) then 

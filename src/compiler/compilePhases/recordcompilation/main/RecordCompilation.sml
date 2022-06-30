@@ -341,7 +341,6 @@ struct
            loc = loc}
       | TL.TLSELECT {label, recordExp, recordTy, resultTy, loc} =>
         let
-          val _ = print "TL.TLSELECT compiling... \n"
           val indexExp = toExp context (generateInstance context (T.INDEXty (label, recordTy)) loc)
           val indexRecastedExp = RC.RCCAST {
             exp = indexExp,
@@ -359,56 +358,56 @@ struct
             resultSize = generateSize context loc resultTy,
             resultTag = generateTag context loc resultTy,
             loc = loc}
-          (* findTy preprocessing *)
-          val findTy = #ty (UP.HASH_exInfo_find loc)
-          (* val instTyList = [resultTy] *)
-          val instTyList = [recordTy, resultTy]
-          val tpappedFindTy = TypesBasics.tpappTy (findTy, instTyList)
-          val keyToRetTy = case tpappedFindTy of
-            T.FUNMty (_, ranty) => ranty
-          | _ => raise Bug.Bug "findFun does not have expected ty"
-          (* findExp preprocessing *)
-          val findExp = (TL.TLEXVAR ((UP.HASH_exInfo_find loc), loc))
-            val _ = print (Bug.prettyPrint (TL.formatWithType_tlexp findExp))
-            val _ = print " : "
-            val _ = print (Bug.prettyPrint (T.format_ty findTy))
-          (* locがずれそう *)
-          (* val hashExp = TL.TLCAST {
-            exp = recordExp,
-            expTy = recordTy,
-            targetTy = T.CONSTRUCTty {tyCon=(UP.HASH_tyCon_hashtbl loc), args=[]},
-            cast = TL.TypeCast,
-            loc = loc
-          } *)
-          val findTlexp = TL.TLAPPM {
-            funExp = TL.TLAPPM {
-              funExp = TL.TLTAPP {
-                exp = findExp,
-                expTy = findTy,
-                instTyList = instTyList,
-                loc=loc
-              },
-              funTy = tpappedFindTy,
-              argExpList = [recordExp],
-              loc = loc
-            },
-            funTy = keyToRetTy,
-            argExpList = [TL.TLSTRING (TL.STRING (RecordLabel.toString label), loc)],
-            loc = loc
-          }
-          val findRcexp = compileExp context findTlexp
-          val _ = print "\nRCDEBUG_findRcexp\n"
-          (* val _ = print (Bug.prettyPrint (RC.formatWithType_rcexp findRcexp)) *)
-          val switchExp = RC.RCSWITCH {
-            exp = indexRecastedExp,
-            expTy = BuiltinTypes.word32Ty,
-            branches = [{const=(RC.WORD32 (Word32.fromInt ~1)), body=findRcexp}],
-            defaultExp = selectExp,
-            resultTy = resultTy,
-            loc = loc
-          }
         in
-          switchExp
+          let 
+            (* findTy preprocessing *)
+            val findTy = #ty (UP.HASH_exInfo_find loc)
+            (* val instTyList = [resultTy] *)
+            val instTyList = [recordTy, resultTy]
+            val tpappedFindTy = TypesBasics.tpappTy (findTy, instTyList)
+            val keyToRetTy = case tpappedFindTy of
+              T.FUNMty (_, ranty) => ranty
+            | _ => raise Bug.Bug "findFun does not have expected ty"
+            (* findExp preprocessing *)
+            val findExp = (TL.TLEXVAR ((UP.HASH_exInfo_find loc), loc))
+              (* val _ = print (Bug.prettyPrint (TL.formatWithType_tlexp findExp))
+              val _ = print " : "
+              val _ = print (Bug.prettyPrint (T.format_ty findTy)) *)
+            val hashExp = TL.TLCAST {
+              exp = recordExp,
+              expTy = recordTy,
+              targetTy = T.CONSTRUCTty {tyCon=(UP.HASH_tyCon_hashtbl loc), args=[]},
+              cast = TL.TypeCast,
+              loc = loc
+            }
+            val findTlexp = TL.TLAPPM {
+              funExp = TL.TLAPPM {
+                funExp = TL.TLTAPP {
+                  exp = findExp,
+                  expTy = findTy,
+                  instTyList = instTyList,
+                  loc=loc
+                },
+                funTy = tpappedFindTy,
+                argExpList = [recordExp],
+                loc = loc
+              },
+              funTy = keyToRetTy,
+              argExpList = [TL.TLSTRING (TL.STRING (RecordLabel.toString label), loc)],
+              loc = loc
+            }
+            val findRcexp = compileExp context findTlexp
+            val switchExp = RC.RCSWITCH {
+              exp = indexRecastedExp,
+              expTy = BuiltinTypes.word32Ty,
+              branches = [{const=(RC.WORD32 (Word32.fromInt ~1)), body=findRcexp}],
+              defaultExp = selectExp,
+              resultTy = resultTy,
+              loc = loc
+            }
+          in
+            switchExp
+          end handle UP.UserLevelPrimError _ => selectExp
         end
       | TL.TLMODIFY {label, recordExp, recordTy, elementExp, elementTy, loc} =>
         let

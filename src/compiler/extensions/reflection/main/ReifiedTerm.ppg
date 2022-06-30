@@ -446,6 +446,13 @@ struct
        * @format "<builtin>"
        *)
       BUILTIN
+    | (*%
+       * @format(boxed) "_"
+       *)
+      (*% @prefix toJSON_
+       * @format(boxed) "HASH"
+       *)
+      HASH of boxed
 
   withtype 'a format_recordField
     = (*%

@@ -152,6 +152,7 @@ struct
     | RTm.WORD16 word16 => RTy.WORD16ty
     | RTm.WORD64 word64 => RTy.WORD64ty
     | RTm.WORD8 word8 => RTy.WORD8ty
+    | RTm.HASH _ => RTy.HASHty
 
   fun projectTerm (term, ty) =
       case (term, ty) of
