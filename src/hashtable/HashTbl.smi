@@ -10,7 +10,7 @@ struct
   val create  : {hash: string -> word, eq: string * string -> bool} -> hashtbl
   val default : unit -> hashtbl
   val size    : hashtbl -> int
-  val add     : hashtbl -> string -> Dynamic.void Dynamic.dyn -> unit
+  val add     : hashtbl -> string -> Dynamic.void Dynamic.dyn -> hashtbl
   val find    : hashtbl -> string -> Dynamic.void Dynamic.dyn
   (* val find    : ['a#reify. hashtbl -> string -> 'a] *)
 end
