@@ -450,7 +450,7 @@ struct
 
   fun equalAll r nil = ()
     | equalAll r (x :: nil) = ()
-    | equalAll r (x :: h :: t) = (print "\n!equalAll!\n"; (equal r (x, h); equalAll r (x :: t)))
+    | equalAll r (x :: h :: t) = (equal r (x, h); equalAll r (x :: t))
 
   val equalTy =
       fn x =>
