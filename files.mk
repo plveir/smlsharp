@@ -1108,8 +1108,8 @@ src/compiler/compilePhases/llvmemit/main/LLVMEmit.o \
 src/compiler/compilePhases/toplevel/main/TopData.ppg.o \
 src/compiler/compilePhases/toplevel/main/NameEvalEnvUtils.o \
 src/compiler/compilePhases/toplevel/main/Top.o \
-src/hashtable/HashTblTy.o \
 src/hashtable/HashTbl.o \
+src/hashtable/Interoperable.o \
 src/config/main/Version.o \
 src/compiler/libs/toolchain/main/BinUtils.o \
 src/compiler/compilePhases/main/main/GetOptLong.o \
@@ -1468,8 +1468,8 @@ src/compiler/compilePhases/llvmemit/main/LLVMEmit.o \
 src/compiler/compilePhases/toplevel/main/TopData.ppg.o \
 src/compiler/compilePhases/toplevel/main/NameEvalEnvUtils.o \
 src/compiler/compilePhases/toplevel/main/Top.o \
-src/hashtable/HashTblTy.o \
-src/hashtable/HashTbl.o
+src/hashtable/HashTbl.o \
+src/hashtable/Interoperable.o
 THREAD_LIB_OBJECTS = \
 src/basis/main/General.o \
 src/basis/main/StringCvt.o \
@@ -2045,8 +2045,8 @@ src/foreach/main/ForeachCommon.o \
 src/foreach/main/ForeachData.o \
 src/foreach/main/Foreach.o \
 src/foreach/main/ForeachArray.o \
-src/hashtable/HashTblTy.o \
 src/hashtable/HashTbl.o \
+src/hashtable/Interoperable.o \
 tests/driver/Compiler.o \
 tests/suite/compiler_test/CompilerTest.o \
 tests/suite/regression/RegressionTests.o \
@@ -2406,7 +2406,7 @@ src/foreach/main/ForeachCommon.o \
 src/foreach/main/ForeachData.o \
 src/foreach/main/Foreach.o \
 src/hashtable/HashTbl.o \
-src/hashtable/HashTblTy.o \
+src/hashtable/Interoperable.o \
 src/ml-lpt/lib/antlr-stream-pos.o \
 src/ml-lpt/lib/ulex-buffer.o \
 src/ml-yacc/lib/lrtable.o \
@@ -2821,7 +2821,7 @@ src/foreach/main/ForeachData.smi \
 src/foreach/main/Foreach.smi \
 src/foreach.smi \
 src/hashtable/HashTbl.smi \
-src/hashtable/HashTblTy.smi \
+src/hashtable/Interoperable.smi \
 src/hashtbl.smi \
 src/ml-lpt/lib/antlr-stream-pos.smi \
 src/ml-lpt/lib/ulex-buffer.smi \
@@ -3329,8 +3329,8 @@ src/foreach/main/ForeachCommon.o \
 src/foreach/main/ForeachData.o \
 src/foreach/main/Foreach.o \
 src/foreach/main/ForeachArray.o \
-src/hashtable/HashTblTy.o \
 src/hashtable/HashTbl.o \
+src/hashtable/Interoperable.o \
 src/config/main/Version.o \
 src/compiler/compilePhases/main/main/Interactive.o \
 src/compiler/compilePhases/main/main/RunLoop.o \

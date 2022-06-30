@@ -1,2 +1,2 @@
-include "./hashtable/HashTblTy.smi"
 include "./hashtable/HashTbl.smi"
+include "./hashtable/Interoperable.smi"

@@ -333,6 +333,7 @@ struct
     val REIFY_conInfo_WORD64ty =                          ["ReifiedTy", "WORD64ty"];
     val REIFY_conInfo_WORD8ty =                           ["ReifiedTy", "WORD8ty"];
     val REIFY_conInfo_WORD32ty =                          ["ReifiedTy", "WORD32ty"];
+    val REIFY_conInfo_HASHty =                            ["ReifiedTy", "HASHty"];
 
     val REIFY_conInfo_ARRAYty = getCon REIFY_conInfo_ARRAYty
     val REIFY_conInfo_BOOLty = getCon REIFY_conInfo_BOOLty
@@ -379,6 +380,7 @@ struct
     val REIFY_conInfo_WORD64ty = getCon REIFY_conInfo_WORD64ty
     val REIFY_conInfo_WORD8ty = getCon  REIFY_conInfo_WORD8ty
     val REIFY_conInfo_WORD32ty = getCon REIFY_conInfo_WORD32ty
+    val REIFY_conInfo_HASHty = getCon REIFY_conInfo_HASHty
 
     val REIFY_exExnInfo_NaturalJoin =      ["NaturalJoin", "NaturalJoin"];
     val REIFY_exExnInfo_RuntimeTypeError = ["PartialDynamic", "RuntimeTypeError"];
@@ -469,19 +471,16 @@ struct
     val REIFY_exInfo_toReifiedTermPrint =  getExVar  REIFY_exInfo_toReifiedTermPrint
     val REIFY_exInfo_typIdConSetListToConSetEnv =  getExVar  REIFY_exInfo_typIdConSetListToConSetEnv
 
-    val HASH_tyCon_hashtbl  = ["HashTblTy", "hashtbl"];
-    val HASH_exInfo_create  = ["HashTbl", "create"];
-    val HASH_exInfo_default = ["HashTbl", "default"];
-    val HASH_exInfo_find    = ["HashTbl", "find"];
-    val HASH_exInfo_add     = ["HashTbl", "add"];
+    val HASH_tyCon_hashtbl  = ["HashTbl", "hashtbl"];
+    val HASH_exInfo_find    = ["Interoperable", "find"];
+    val HASH_exInfo_add     = ["Interoperable", "add"];
+    
     val HASH_icexp_create   = ["HashTbl", "create"];
     val HASH_icexp_default  = ["HashTbl", "default"];
-    val HASH_icexp_find     = ["HashTbl", "find"];
-    val HASH_icexp_add      = ["HashTbl", "add"];
+    val HASH_icexp_find     = ["Interoperable", "find"];
+    val HASH_icexp_add      = ["Interoperable", "add"];
 
     val HASH_tyCon_hashtbl  = getTyCon HASH_tyCon_hashtbl
-    val HASH_exInfo_create  = getExVar HASH_exInfo_create
-    val HASH_exInfo_default = getExVar HASH_exInfo_default
     val HASH_exInfo_find    = getExVar HASH_exInfo_find
     val HASH_exInfo_add     = getExVar HASH_exInfo_add
     val HASH_icexp_create   = getIcexp HASH_icexp_create

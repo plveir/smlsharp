@@ -89,6 +89,7 @@ struct
   val REIFY_conInfo_WORD64ty : Loc.loc -> Types.conInfo
   val REIFY_conInfo_WORD8ty : Loc.loc -> Types.conInfo
   val REIFY_conInfo_WORD32ty : Loc.loc -> Types.conInfo
+  val REIFY_conInfo_HASHty : Loc.loc -> Types.conInfo
 
   val REIFY_exExnInfo_NaturalJoin : Loc.loc -> Types.exExnInfo
   val REIFY_exExnInfo_RuntimeTypeError : Loc.loc -> Types.exExnInfo
@@ -134,8 +135,6 @@ struct
   val REIFY_exInfo_typIdConSetListToConSetEnv : Loc.loc -> Types.exVarInfo
 
   val HASH_tyCon_hashtbl : Loc.loc -> Types.tyCon
-  val HASH_exInfo_create : Loc.loc -> Types.exVarInfo
-  val HASH_exInfo_default : Loc.loc -> Types.exVarInfo
   val HASH_exInfo_find : Loc.loc -> Types.exVarInfo
   val HASH_exInfo_add : Loc.loc -> Types.exVarInfo
   val HASH_icexp_create : Loc.loc -> IDCalc.icexp

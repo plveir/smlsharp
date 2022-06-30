@@ -1,0 +1,10 @@
+_require "../basis.smi"
+_require "../reify.smi"
+_require "./HashTbl.smi"
+
+structure Interoperable =
+struct
+  (* val add     : ['a#reify, 'b#reify#{}. 'b -> string -> 'a -> unit] *)
+  val find    : ['a#reify, 'b#reify#{}. 'b -> string -> 'a]
+  (* val find    : ['a#reify. hashtbl -> string -> 'a] *)
+end
