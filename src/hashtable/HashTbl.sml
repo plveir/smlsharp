@@ -54,19 +54,19 @@ struct
 
 
   (* operations for hashtbl *)
-  fun add (t as HASH {hash,eq,buckets,size}: hashtbl) (k: string) v : hashtbl =
+  fun add (t as HASH {hash,eq,buckets,size}: hashtbl) (k: string) v : unit =
       let 
         val arrsz = maybeResize t
         val w = hash k
         val i = idx arrsz w
         val b = Array.sub(!buckets,i)
       in 
-        (case look eq k b of
+        case look eq k b of
           SOME _ =>
             Array.update(!buckets, i, (w,k,v)::rem eq k nil b)
         | NONE =>
           ( Array.update(!buckets, i, (w,k,v) :: b)
-            ; size := !size + 1 )); t
+            ; size := !size + 1 )
       end
 
   fun find (t as HASH {hash,eq,buckets,size}: hashtbl) (k: string): Dynamic.void Dynamic.dyn =
@@ -88,12 +88,7 @@ struct
     end *)
 
   (* FIXME *)
-  val hashFn = 
-    let
-      fun compose f g = let fun h x = g (f x) in h end
-    in
-      (compose String.size Word.fromInt)
-    end
+  val hashFn = HashString.hashString
 
   val eqFn = (op =)
 

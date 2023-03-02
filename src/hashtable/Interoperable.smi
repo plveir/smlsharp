@@ -4,6 +4,7 @@ _require "./HashTbl.smi"
 
 structure Interoperable =
 struct
-  val add     : ['a#reify, 'b#reify#{}. 'b -> string -> 'a -> 'b]
-  val find    : ['a#reify, 'b#reify#{}. 'b -> string -> 'a]
+  (* val add     : ['a#reify, 'b#reify#{}. 'b -> string -> 'a ref -> unit] *)
+  val find      : ['a#reify, 'b#reify#{}. 'b -> string -> 'a]
+  val wrapFind  : ['a#reify. HashTbl.hashtbl -> string -> 'a]
 end

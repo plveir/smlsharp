@@ -3767,6 +3767,7 @@ in
                (
                 (UP.HASH_tyCon_hashtbl loc;
                 U.unify [(elemTy, reifyTy1), (ty1, reifyTy2)]
+                (* U.unify [(elemTy, reifyTy1)] *)
                 ) handle UP.UserLevelPrimError _ => ();
                 U.unify [(ty1, recordTy)];
                  (elemTy, TC.TPSELECT{label=label,
@@ -3808,11 +3809,12 @@ in
                      utvarOpt = NONE
                     }
                val reifyTy1 = newReifyTvarTy ()
-               val reifyTy2 = newReifyTvarTy ()
+               (* val reifyTy2 = newReifyTvarTy () *)
              in
                (
                 (UP.HASH_tyCon_hashtbl loc;
-                U.unify [(elemTy, reifyTy1), (ty1, reifyTy2)]
+                (* U.unify [(elemTy, reifyTy1), (ty1, reifyTy2)] *)
+                U.unify [(elemTy, reifyTy1)]
                 ) handle UP.UserLevelPrimError _ => ();
                 U.unify [(ty1, recordTy)];
                  (elemTy, TC.TPSELECT{label=label,

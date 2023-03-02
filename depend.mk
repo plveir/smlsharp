@@ -37979,6 +37979,40 @@ src/hashtable/HashTbl.o: \
  src/compiler/data/control/main/PrintControl.smi \
  src/compiler/extensions/reflection/main/Dynamic.smi \
  src/reify.smi \
+ src/smlnj-lib/Util/array-qsort.smi \
+ src/smlnj-lib/Util/array-sort-sig.sml \
+ src/smlnj-lib/Util/atom.smi \
+ src/smlnj-lib/Util/atom-redblack-set.smi \
+ src/smlnj-lib/Util/atom-set.smi \
+ src/smlnj-lib/Util/atom-sig.sml \
+ src/smlnj-lib/Util/hash-table-fn.smi \
+ src/smlnj-lib/Util/atom-table.smi \
+ src/smlnj-lib/Util/fnv-hash.smi \
+ src/smlnj-lib/Util/format-sig.sml \
+ src/smlnj-lib/Util/format.smi \
+ src/smlnj-lib/Util/getopt-sig.sml \
+ src/smlnj-lib/Util/getopt.smi \
+ src/smlnj-lib/Util/hash-key-sig.sml \
+ src/smlnj-lib/Util/hash-string.smi \
+ src/smlnj-lib/Util/int-list-map.smi \
+ src/smlnj-lib/Util/lib-base-sig.sml \
+ src/smlnj-lib/Util/lib-base.smi \
+ src/smlnj-lib/Util/list-mergesort.smi \
+ src/smlnj-lib/Util/list-xprod-sig.sml \
+ src/smlnj-lib/Util/list-xprod.smi \
+ src/smlnj-lib/Util/listsort-sig.sml \
+ src/smlnj-lib/Util/mono-hash-table-sig.sml \
+ src/smlnj-lib/Util/ord-key-sig.sml \
+ src/smlnj-lib/Util/ord-map-sig.sml \
+ src/smlnj-lib/Util/ord-set-sig.sml \
+ src/smlnj-lib/Util/parser-comb-sig.sml \
+ src/smlnj-lib/Util/parser-comb.smi \
+ src/smlnj-lib/Util/redblack-map-fn.smi \
+ src/smlnj-lib/Util/redblack-set-fn.smi \
+ src/smlnj-lib/Util/utf8-sig.sml \
+ src/smlnj-lib/Util/utf8.smi \
+ src/smlnj-lib/Util/smlnj-lib.smi \
+ src/smlnj-lib.smi \
  src/hashtable/HashTbl.smi \
  $(SMLSHARP_DEP)
 src/hashtable/Interoperable.o: \
@@ -38104,6 +38138,40 @@ src/hashtable/Interoperable.o: \
  src/compiler/data/control/main/PrintControl.smi \
  src/compiler/extensions/reflection/main/Dynamic.smi \
  src/reify.smi \
+ src/smlnj-lib/Util/array-qsort.smi \
+ src/smlnj-lib/Util/array-sort-sig.sml \
+ src/smlnj-lib/Util/atom.smi \
+ src/smlnj-lib/Util/atom-redblack-set.smi \
+ src/smlnj-lib/Util/atom-set.smi \
+ src/smlnj-lib/Util/atom-sig.sml \
+ src/smlnj-lib/Util/hash-table-fn.smi \
+ src/smlnj-lib/Util/atom-table.smi \
+ src/smlnj-lib/Util/fnv-hash.smi \
+ src/smlnj-lib/Util/format-sig.sml \
+ src/smlnj-lib/Util/format.smi \
+ src/smlnj-lib/Util/getopt-sig.sml \
+ src/smlnj-lib/Util/getopt.smi \
+ src/smlnj-lib/Util/hash-key-sig.sml \
+ src/smlnj-lib/Util/hash-string.smi \
+ src/smlnj-lib/Util/int-list-map.smi \
+ src/smlnj-lib/Util/lib-base-sig.sml \
+ src/smlnj-lib/Util/lib-base.smi \
+ src/smlnj-lib/Util/list-mergesort.smi \
+ src/smlnj-lib/Util/list-xprod-sig.sml \
+ src/smlnj-lib/Util/list-xprod.smi \
+ src/smlnj-lib/Util/listsort-sig.sml \
+ src/smlnj-lib/Util/mono-hash-table-sig.sml \
+ src/smlnj-lib/Util/ord-key-sig.sml \
+ src/smlnj-lib/Util/ord-map-sig.sml \
+ src/smlnj-lib/Util/ord-set-sig.sml \
+ src/smlnj-lib/Util/parser-comb-sig.sml \
+ src/smlnj-lib/Util/parser-comb.smi \
+ src/smlnj-lib/Util/redblack-map-fn.smi \
+ src/smlnj-lib/Util/redblack-set-fn.smi \
+ src/smlnj-lib/Util/utf8-sig.sml \
+ src/smlnj-lib/Util/utf8.smi \
+ src/smlnj-lib/Util/smlnj-lib.smi \
+ src/smlnj-lib.smi \
  src/hashtable/HashTbl.smi \
  src/hashtable/Interoperable.smi \
  $(SMLSHARP_DEP)

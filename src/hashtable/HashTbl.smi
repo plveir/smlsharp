@@ -1,5 +1,6 @@
 _require "../basis.smi"
 _require "../reify.smi"
+_require "../smlnj-lib.smi"
 
 structure HashTbl =
 struct
@@ -10,7 +11,7 @@ struct
   val create  : {hash: string -> word, eq: string * string -> bool} -> hashtbl
   val default : unit -> hashtbl
   val size    : hashtbl -> int
-  val add     : hashtbl -> string -> Dynamic.void Dynamic.dyn -> hashtbl
+  val add     : hashtbl -> string -> Dynamic.void Dynamic.dyn -> unit
   val find    : hashtbl -> string -> Dynamic.void Dynamic.dyn
   (* val find    : ['a#reify. hashtbl -> string -> 'a] *)
 end

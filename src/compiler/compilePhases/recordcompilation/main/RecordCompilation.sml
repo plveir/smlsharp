@@ -362,8 +362,8 @@ struct
           let 
             (* findTy preprocessing *)
             val findTy = #ty (UP.HASH_exInfo_find loc)
-            (* val instTyList = [resultTy] *)
-            val instTyList = [recordTy, resultTy]
+            val instTyList = [resultTy]
+            (* val instTyList = [recordTy, resultTy] *)
             val tpappedFindTy = TypesBasics.tpappTy (findTy, instTyList)
             val keyToRetTy = case tpappedFindTy of
               T.FUNMty (_, ranty) => ranty
@@ -389,7 +389,7 @@ struct
                   loc=loc
                 },
                 funTy = tpappedFindTy,
-                argExpList = [recordExp],
+                argExpList = [hashExp],
                 loc = loc
               },
               funTy = keyToRetTy,
@@ -397,7 +397,8 @@ struct
               loc = loc
             }
             val findRcexp = compileExp context findTlexp
-            val switchExp = RC.RCSWITCH {
+          in
+            RC.RCSWITCH {
               exp = indexRecastedExp,
               expTy = BuiltinTypes.word32Ty,
               branches = [{const=(RC.WORD32 (Word32.fromInt ~1)), body=findRcexp}],
@@ -405,8 +406,6 @@ struct
               resultTy = resultTy,
               loc = loc
             }
-          in
-            switchExp
           end handle UP.UserLevelPrimError _ => selectExp
         end
       | TL.TLMODIFY {label, recordExp, recordTy, elementExp, elementTy, loc} =>

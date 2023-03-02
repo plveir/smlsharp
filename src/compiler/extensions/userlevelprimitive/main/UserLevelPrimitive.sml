@@ -472,7 +472,7 @@ struct
     val REIFY_exInfo_typIdConSetListToConSetEnv =  getExVar  REIFY_exInfo_typIdConSetListToConSetEnv
 
     val HASH_tyCon_hashtbl  = ["HashTbl", "hashtbl"];
-    val HASH_exInfo_find    = ["Interoperable", "find"];
+    val HASH_exInfo_find    = ["Interoperable", "wrapFind"];
     val HASH_exInfo_add     = ["Interoperable", "add"];
     
     val HASH_icexp_create   = ["HashTbl", "create"];
